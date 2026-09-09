@@ -1,0 +1,16 @@
+{
+  "trading_day_index": 1,
+  "total_invest": 3116.12,
+  "tiers": [
+    {
+      "quantity": 8,
+      "buy_price": 125.54,
+      "buy_date": "2026-09-09",
+      "sell_target": 129.3062,
+      "order_id": "v8SiG69WslKaUoPBbT-4G4Om0qIClL8dTBgeN-77zXDSXNCq6i2kaYfVTfG2Joez",
+      "pending_sell_order_id": null,
+      "held_days": 0
+    }
+  ],
+  "pending_order": null
+}

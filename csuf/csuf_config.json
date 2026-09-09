@@ -1,0 +1,9 @@
+{
+  "symbol": "SOXL",
+  "n_div": 3,
+  "buy_min_multiplier": 1.3,
+  "sell_rate": 0.03,
+  "hold_limit": 3,
+  "buffer_usd": 0,
+  "dry_run": false
+}
