@@ -1,0 +1,49 @@
+name: csuf-trading
+
+on:
+  schedule:
+    - cron: '0 22 * * *'   # 매일 07:00 KST (전날 22:00 UTC) ? 아침 티어정리
+    - cron: '0 10 * * *'   # 매일 19:00 KST (10:00 UTC) ? 저녁 매수/매도 주문
+  workflow_dispatch: {}     # Actions 탭에서 수동 실행용
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Decide which script to run (아침 vs 저녁)
+        id: pick
+        run: |
+          HOUR_UTC=$(date -u +%H)
+          if [ "$HOUR_UTC" == "22" ]; then
+            echo "script=csuf/csuf_morning.py" >> "$GITHUB_OUTPUT"
+          else
+            echo "script=csuf/csuf_evening.py" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run csuf script
+        env:
+          TOSS_CLIENT_ID: ${{ secrets.TOSS_CLIENT_ID }}
+          TOSS_CLIENT_SECRET: ${{ secrets.TOSS_CLIENT_SECRET }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python ${{ steps.pick.outputs.script }}
+
+      - name: Commit updated state file
+        run: |
+          git config user.name "csuf-bot"
+          git config user.email "csuf-bot@users.noreply.github.com"
+          git add csuf/csuf_state.json
+          git diff --cached --quiet || git commit -m "csuf state update [skip ci]"
+          git push
