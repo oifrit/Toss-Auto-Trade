@@ -1,0 +1,28 @@
+{
+  "updated_at": "2026-09-10T07:10:00+09:00",
+  "accounts": {
+    "me": {
+      "label": "본인",
+      "total_invest": 3105,
+      "total_bought": 1004,
+      "cash": 2101,
+      "tiers": [
+        {
+          "quantity": 8,
+          "buy_price": 125.54,
+          "buy_date": "2026-09-09",
+          "sell_target": 129.31,
+          "held_days": 0
+        }
+      ],
+      "pending_order": {
+        "quantity": 8,
+        "order_price_used": 123.27
+      },
+      "history": [
+        { "date": "2026-09-09", "total_assets": 3116.12 },
+        { "date": "2026-09-10", "total_assets": 3105 }
+      ]
+    }
+  }
+}
