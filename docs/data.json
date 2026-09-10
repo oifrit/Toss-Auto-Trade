@@ -1,27 +1,32 @@
 {
-  "updated_at": "2026-09-10T07:10:00+09:00",
+  "updated_at": "2026-09-10T10:21:56.786810",
   "accounts": {
     "me": {
       "label": "본인",
-      "total_invest": 3105,
-      "total_bought": 1004,
-      "cash": 2101,
+      "total_invest": 3105.14,
+      "total_bought": 1004.32,
+      "cash": 2100.82,
       "tiers": [
         {
           "quantity": 8,
           "buy_price": 125.54,
           "buy_date": "2026-09-09",
-          "sell_target": 129.31,
+          "sell_target": 129.3062,
+          "order_id": "v8SiG69WslKaUoPBbT-4G4Om0qIClL8dTBgeN-77zXDSXNCq6i2kaYfVTfG2Joez",
+          "pending_sell_order_id": null,
           "held_days": 0
         }
       ],
-      "pending_order": {
-        "quantity": 8,
-        "order_price_used": 123.27
-      },
+      "pending_order": null,
       "history": [
-        { "date": "2026-09-09", "total_assets": 3116.12 },
-        { "date": "2026-09-10", "total_assets": 3105 }
+        {
+          "date": "2026-09-09",
+          "total_assets": 3116.12
+        },
+        {
+          "date": "2026-09-10",
+          "total_assets": 3105.14
+        }
       ]
     }
   }
