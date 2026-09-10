@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-09-10T17:30:34.719130",
+  "updated_at": "2026-09-10T17:46:44.698460",
   "accounts": {
     "me": {
       "label": "본인",
-      "total_invest": 2269.54,
+      "total_invest": 3276.5,
       "total_bought": 1004.32,
       "cash": 1265.22,
       "tiers": [
@@ -32,9 +32,10 @@
         },
         {
           "date": "2026-09-10",
-          "total_assets": 2269.54
+          "total_assets": 3276.5
         }
-      ]
+      ],
+      "pending_amount": 1006.96
     }
   }
 }
