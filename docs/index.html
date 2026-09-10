@@ -217,13 +217,18 @@ function fmtMoney(n) {
   return '$' + Math.round(n).toLocaleString('en-US');
 }
 
-function computeActualCagr(history) {
+function computePerformance(history) {
   if (!history || history.length < 2) return null;
   const first = history[0], last = history[history.length - 1];
   const days = (new Date(last.date) - new Date(first.date)) / 86400000;
   if (days <= 0 || first.total_assets <= 0) return null;
+  const totalReturn = (last.total_assets / first.total_assets - 1) * 100;
+  if (days < 30) {
+    return { mode: 'cumulative', value: totalReturn, days };
+  }
   const years = days / 365.25;
-  return (Math.pow(last.total_assets / first.total_assets, 1 / years) - 1) * 100;
+  const cagr = (Math.pow(last.total_assets / first.total_assets, 1 / years) - 1) * 100;
+  return { mode: 'cagr', value: cagr, days };
 }
 
 function renderAccount(key) {
@@ -289,24 +294,47 @@ function renderAccount(key) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { x: { display: false }, y: { display: false } },
+      scales: {
+        x: { display: false },
+        y: {
+          display: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            callback: (v) => '$' + Math.round(v).toLocaleString('en-US'),
+            maxTicksLimit: 4,
+          },
+        },
+      },
     }
   });
 
-  const actualCagr = computeActualCagr(history);
+  const perf = computePerformance(history);
   const compareEl = document.getElementById('compare');
-  const actualPct = actualCagr === null ? 0 : Math.max(actualCagr, 0);
+  const actualPct = perf === null ? 0 : Math.max(perf.value, 0);
   const maxRef = Math.max(BACKTEST_CAGR, actualPct, 1);
+  const actualLabel = perf === null
+    ? '데이터 부족'
+    : (perf.mode === 'cumulative'
+        ? `${perf.value.toFixed(1)}% (누적, ${Math.round(perf.days)}일)`
+        : `${perf.value.toFixed(1)}% (연환산)`);
   compareEl.innerHTML = `
     <div class="compare-row">
-      <div class="top"><span>백테스트</span><span>${BACKTEST_CAGR}%</span></div>
+      <div class="top"><span>백테스트 (연환산)</span><span>${BACKTEST_CAGR}%</span></div>
       <div class="bar"><div class="bar-fill gold" style="width:${(BACKTEST_CAGR/maxRef*100).toFixed(1)}%"></div></div>
     </div>
     <div class="compare-row">
-      <div class="top"><span>실전</span><span>${actualCagr === null ? '데이터 부족' : actualCagr.toFixed(1)+'%'}</span></div>
+      <div class="top"><span>실전</span><span>${actualLabel}</span></div>
       <div class="bar"><div class="bar-fill teal" style="width:${(actualPct/maxRef*100).toFixed(1)}%"></div></div>
     </div>
   `;
+  if (perf && perf.mode === 'cumulative') {
+    const note = document.createElement('p');
+    note.style.cssText = 'font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:6px;';
+    note.textContent = '※ 30일 미만 데이터라 연환산 대신 누적수익률로 표시 중';
+    compareEl.appendChild(note);
+  }
 }
 
 fetch('./data.json?_=' + Date.now())
