@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-10T11:02:11.158814",
+  "updated_at": "2026-09-10T11:04:13.389417",
   "accounts": {
     "me": {
       "label": "본인",
@@ -10,11 +10,11 @@
         {
           "quantity": 8,
           "buy_price": 125.54,
-          "buy_date": "2026-09-09",
+          "buy_date": "2026-09-08",
           "sell_target": 129.3062,
           "order_id": "v8SiG69WslKaUoPBbT-4G4Om0qIClL8dTBgeN-77zXDSXNCq6i2kaYfVTfG2Joez",
           "pending_sell_order_id": null,
-          "held_days": 0
+          "held_days": 1
         }
       ],
       "pending_order": null,
