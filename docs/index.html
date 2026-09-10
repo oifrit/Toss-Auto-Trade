@@ -86,7 +86,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 
 .metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1px;
   background: var(--border);
   border: 1px solid var(--border);
@@ -185,6 +185,7 @@ footer {
       <div class="metric gold"><p class="label">총투자</p><p class="value" id="m-invest">-</p></div>
       <div class="metric"><p class="label">총매입</p><p class="value" id="m-bought">-</p></div>
       <div class="metric teal"><p class="label">잔금</p><p class="value" id="m-cash">-</p></div>
+      <div class="metric" id="m-pending-card" style="display:none;"><p class="label">미체결</p><p class="value" id="m-pending">-</p></div>
     </div>
   </section>
 
@@ -242,6 +243,13 @@ function renderAccount(key) {
   document.getElementById('m-invest').textContent = fmtMoney(acc.total_invest);
   document.getElementById('m-bought').textContent = fmtMoney(acc.total_bought);
   document.getElementById('m-cash').textContent = fmtMoney(acc.cash);
+  const pendingCard = document.getElementById('m-pending-card');
+  if (acc.pending_amount && acc.pending_amount > 0) {
+    pendingCard.style.display = '';
+    document.getElementById('m-pending').textContent = fmtMoney(acc.pending_amount);
+  } else {
+    pendingCard.style.display = 'none';
+  }
 
   const tiersEl = document.getElementById('tiers');
   tiersEl.innerHTML = '';
