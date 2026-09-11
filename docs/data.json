@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-09-11T07:10:05.478314",
+  "updated_at": "2026-09-11T16:30:06.600584",
   "accounts": {
     "me": {
       "label": "본인",
       "total_invest": 3266.58,
       "total_bought": 1930.4,
-      "cash": 1336.18,
+      "cash": 294.34,
       "tiers": [
         {
           "quantity": 8,
@@ -13,7 +13,7 @@
           "buy_date": "2026-09-08",
           "sell_target": 129.3062,
           "order_id": "v8SiG69WslKaUoPBbT-4G4Om0qIClL8dTBgeN-77zXDSXNCq6i2kaYfVTfG2Joez",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4Kxgbz2Ya5dWtkI1wigL4df5Qyq",
           "held_days": 2
         },
         {
@@ -22,11 +22,18 @@
           "buy_date": "2026-09-10",
           "sell_target": 129.6461,
           "order_id": "v8SiG69WslKaUoPBbT-4GxXHDLgz7Ny0u1crFCuyTwpGEn56McdS4HyOqnrFH2nv",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4Kxgbw0DarDgRZqExUNelEHuLJu",
           "held_days": 0
         }
       ],
-      "pending_order": null,
+      "pending_order": {
+        "client_order_id": "csuf-buy-1789111804",
+        "order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4KxgbwufZiROkIYK_1W-s6SDEbm",
+        "symbol": "SOXL",
+        "quantity": 9,
+        "order_price_used": 115.76,
+        "sell_target": 119.2328
+      },
       "history": [
         {
           "date": "2026-09-09",
@@ -41,7 +48,7 @@
           "total_assets": 3266.58
         }
       ],
-      "pending_amount": 0.0
+      "pending_amount": 1041.84
     }
   }
 }
