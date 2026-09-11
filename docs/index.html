@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Toss Auto Trade — csuf</title>
+<title>Toss Auto Trade</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -16,6 +16,7 @@
   --gold: #c9a227;
   --teal: #4fb3a5;
   --red: #c1554b;
+  --violet: #8a7fd6;
   --sans: 'Space Grotesk', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', monospace;
 }
@@ -34,25 +35,11 @@ body {
 .wrap { max-width: 720px; margin: 0 auto; padding: 24px 18px 60px; }
 
 header { margin-bottom: 20px; }
-header .eyebrow {
-  font-family: var(--mono);
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--text);
-  margin: 0 0 6px;
-}
-header h1 {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.01em;
-}
 header .updated {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text-dim);
-  margin-top: 6px;
+  margin-top: 0;
 }
 
 nav.tabs {
@@ -91,6 +78,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
   background: var(--border);
   border: 1px solid var(--border);
 }
+.metrics.cols-3 { grid-template-columns: repeat(3, 1fr); }
 .metric {
   background: var(--bg);
   padding: 12px 8px;
@@ -108,6 +96,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 }
 .metric.gold .value { color: var(--gold); }
 .metric.teal .value { color: var(--teal); }
+.metric.violet .value { color: var(--violet); }
 
 h2.section-title {
   font-size: 13px;
@@ -146,6 +135,14 @@ h2.section-title {
 
 .chart-wrap { position: relative; height: 160px; }
 
+.legend-row {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  margin-top: 10px;
+}
+.legend-row span { display: flex; align-items: center; gap: 5px; }
+.legend-row i { width: 9px; height: 9px; display: inline-block; border-radius: 1px; }
+
 .compare-row { margin-bottom: 14px; }
 .compare-row .top {
   display: flex;
@@ -174,35 +171,59 @@ footer {
 <body>
 <div class="wrap">
   <header>
-    <p class="eyebrow">토스 - csuf</p>
     <p class="updated" id="updated">불러오는 중...</p>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
 
-  <section class="panel">
-    <div class="metrics">
-      <div class="metric gold"><p class="label">총투자</p><p class="value" id="m-invest">-</p></div>
-      <div class="metric"><p class="label">총매입</p><p class="value" id="m-bought">-</p></div>
-      <div class="metric teal"><p class="label">잔금</p><p class="value" id="m-cash">-</p></div>
-      <div class="metric" id="m-pending-card" style="display:none;"><p class="label">미체결</p><p class="value" id="m-pending">-</p></div>
-    </div>
-  </section>
+  <!-- csuf 전용 뷰 -->
+  <div id="view-csuf">
+    <section class="panel">
+      <div class="metrics">
+        <div class="metric gold"><p class="label">총투자</p><p class="value" id="m-invest">-</p></div>
+        <div class="metric"><p class="label">총매입</p><p class="value" id="m-bought">-</p></div>
+        <div class="metric teal"><p class="label">잔금</p><p class="value" id="m-cash">-</p></div>
+        <div class="metric" id="m-pending-card" style="display:none;"><p class="label">미체결</p><p class="value" id="m-pending">-</p></div>
+      </div>
+    </section>
 
-  <section class="panel">
-    <h2 class="section-title">보유 티어</h2>
-    <div id="tiers"></div>
-  </section>
+    <section class="panel">
+      <h2 class="section-title">보유 티어</h2>
+      <div id="tiers"></div>
+    </section>
 
-  <section class="panel">
-    <h2 class="section-title">자산 추이</h2>
-    <div class="chart-wrap"><canvas id="trend"></canvas></div>
-  </section>
+    <section class="panel">
+      <h2 class="section-title">자산 추이</h2>
+      <div class="chart-wrap"><canvas id="trend"></canvas></div>
+    </section>
 
-  <section class="panel">
-    <h2 class="section-title">백테스트 대비 실전 (CAGR)</h2>
-    <div id="compare"></div>
-  </section>
+    <section class="panel">
+      <h2 class="section-title">백테스트 대비 실전 (CAGR)</h2>
+      <div id="compare"></div>
+    </section>
+  </div>
+
+  <!-- p458/dSuf 전용 뷰 -->
+  <div id="view-p458dsuf" style="display:none;">
+    <section class="panel">
+      <div class="metrics cols-3">
+        <div class="metric gold"><p class="label">p458 자산</p><p class="value" id="pd-p458">-</p></div>
+        <div class="metric teal"><p class="label">dSuf 자산</p><p class="value" id="pd-dsuf">-</p></div>
+        <div class="metric violet"><p class="label">총자산</p><p class="value" id="pd-total">-</p></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2 class="section-title">SOXL 대비 자산추이 (누적수익률 %)</h2>
+      <div class="chart-wrap"><canvas id="pd-chart"></canvas></div>
+      <div class="legend-row">
+        <span><i style="background:#c9a227"></i>p458</span>
+        <span><i style="background:#4fb3a5"></i>dSuf</span>
+        <span><i style="background:#8a7fd6"></i>Total</span>
+        <span><i style="background:#8b909c"></i>SOXL</span>
+      </div>
+    </section>
+  </div>
 
   <footer>oifrit/Toss-Auto-Trade</footer>
 </div>
@@ -212,8 +233,8 @@ footer {
 const BACKTEST_CAGR = 194; // csuf v2 백테스트 CAGR (%), 필요시 이 숫자만 갱신
 
 let chart = null;
+let pdChart = null;
 let currentData = null;
-let currentKey = null;
 
 function fmtMoney(n) {
   return '$' + Math.round(n).toLocaleString('en-US');
@@ -234,11 +255,9 @@ function computePerformance(history) {
 }
 
 function renderAccount(key) {
-  currentKey = key;
   const acc = currentData.accounts[key];
-  document.querySelectorAll('#tabs button').forEach(b => {
-    b.classList.toggle('active', b.dataset.key === key);
-  });
+  document.getElementById('view-csuf').style.display = '';
+  document.getElementById('view-p458dsuf').style.display = 'none';
 
   document.getElementById('m-invest').textContent = fmtMoney(acc.total_invest);
   document.getElementById('m-bought').textContent = fmtMoney(acc.total_bought);
@@ -257,14 +276,14 @@ function renderAccount(key) {
   if (tiers.length === 0 && !acc.pending_order) {
     tiersEl.innerHTML = '<p class="empty">보유 중인 티어가 없습니다.</p>';
   } else {
-    tiers.forEach((t, i) => {
+    tiers.forEach((t) => {
       const held = t.held_days;
       const warn = typeof held === 'number' && held >= 3;
       const row = document.createElement('div');
       row.className = 'tier-row';
       row.innerHTML = `
         <div>
-          <div class="main">${t.buy_date} · ${t.quantity}주</div>
+          <div class="main">${t.buy_date} · ${Math.round(t.quantity)}주</div>
           <div class="sub">$${t.buy_price.toFixed(2)} → $${t.sell_target.toFixed(2)}</div>
         </div>
         <span class="badge ${warn ? 'warn' : 'ok'}">${held ?? '?'}일</span>
@@ -277,7 +296,7 @@ function renderAccount(key) {
       row.className = 'tier-row';
       row.innerHTML = `
         <div>
-          <div class="main">체결대기 · ${p.quantity}주</div>
+          <div class="main">체결대기 · ${Math.round(p.quantity)}주</div>
           <div class="sub">$${p.order_price_used.toFixed(2)}</div>
         </div>
         <span class="badge">대기</span>
@@ -346,6 +365,67 @@ function renderAccount(key) {
   }
 }
 
+function toPctSeries(values) {
+  const base = values.find(v => v !== null && v !== undefined && v !== 0);
+  if (base === undefined) return values.map(() => null);
+  return values.map(v => (v === null || v === undefined) ? null : (v / base - 1) * 100);
+}
+
+function renderP458Dsuf() {
+  document.getElementById('view-csuf').style.display = 'none';
+  document.getElementById('view-p458dsuf').style.display = '';
+
+  const pd = currentData.p458dsuf || { history: [], soxl_history: [] };
+  const history = pd.history || [];
+  const soxlHistory = pd.soxl_history || [];
+
+  const last = history[history.length - 1];
+  document.getElementById('pd-p458').textContent = last ? fmtMoney(last.p458) : '-';
+  document.getElementById('pd-dsuf').textContent = last ? fmtMoney(last.dsuf) : '-';
+  document.getElementById('pd-total').textContent = last ? fmtMoney(last.total) : '-';
+
+  const soxlMap = {};
+  soxlHistory.forEach(s => { soxlMap[s.date] = s.close; });
+
+  const labels = history.map(h => h.date);
+  const p458Pct = toPctSeries(history.map(h => h.p458));
+  const dsufPct = toPctSeries(history.map(h => h.dsuf));
+  const totalPct = toPctSeries(history.map(h => h.total));
+  const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null));
+
+  const ctx = document.getElementById('pd-chart');
+  if (pdChart) pdChart.destroy();
+  pdChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'p458', data: p458Pct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 2, tension: 0.2 },
+        { label: 'dSuf', data: dsufPct, borderColor: '#4fb3a5', pointRadius: 0, borderWidth: 2, tension: 0.2 },
+        { label: 'Total', data: totalPct, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 2, tension: 0.2 },
+        { label: 'SOXL', data: soxlPct, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1.5, borderDash: [3,3], tension: 0.2 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { display: false },
+        y: {
+          display: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            callback: (v) => v.toFixed(0) + '%',
+            maxTicksLimit: 5,
+          },
+        },
+      },
+    }
+  });
+}
+
 fetch('./data.json?_=' + Date.now())
   .then(r => r.json())
   .then(data => {
@@ -353,15 +433,33 @@ fetch('./data.json?_=' + Date.now())
     document.getElementById('updated').textContent = '업데이트: ' + new Date(data.updated_at).toLocaleString('ko-KR');
 
     const tabsEl = document.getElementById('tabs');
-    const keys = Object.keys(data.accounts);
+    const keys = Object.keys(data.accounts || {});
+    let firstBtn = null;
     keys.forEach(key => {
       const btn = document.createElement('button');
       btn.textContent = data.accounts[key].label || key;
-      btn.dataset.key = key;
-      btn.onclick = () => renderAccount(key);
+      btn.onclick = () => {
+        document.querySelectorAll('#tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderAccount(key);
+      };
       tabsEl.appendChild(btn);
+      if (!firstBtn) firstBtn = btn;
     });
-    if (keys.length > 0) renderAccount(keys[0]);
+
+    if (data.p458dsuf) {
+      const btn = document.createElement('button');
+      btn.textContent = 'p458/dSuf';
+      btn.onclick = () => {
+        document.querySelectorAll('#tabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderP458Dsuf();
+      };
+      tabsEl.appendChild(btn);
+      if (!firstBtn) firstBtn = btn;
+    }
+
+    if (firstBtn) firstBtn.click();
   })
   .catch(err => {
     document.getElementById('updated').textContent = '데이터를 불러오지 못했습니다.';
