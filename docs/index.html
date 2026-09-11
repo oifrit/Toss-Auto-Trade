@@ -272,7 +272,8 @@ function renderAccount(key) {
   document.getElementById('view-csuf').style.display = '';
   document.getElementById('view-p458dsuf').style.display = 'none';
 
-  document.getElementById('m-invest').textContent = fmtMoney(acc.total_invest);
+  const bufferNote = acc.buffer_usd ? `(${Math.round(acc.buffer_usd)})` : '';
+  document.getElementById('m-invest').textContent = fmtMoney(acc.total_invest) + bufferNote;
   document.getElementById('m-bought').textContent = fmtMoney(acc.total_bought);
   document.getElementById('m-cash').textContent = fmtMoney(acc.cash);
   const pendingCard = document.getElementById('m-pending-card');
@@ -400,7 +401,10 @@ function renderP458Dsuf() {
   document.getElementById('view-p458dsuf').style.display = '';
 
   const pd = currentData.p458dsuf || { history: [], soxl_history: [] };
-  const history = pd.history || [];
+  const history = (pd.history || []).filter(h => {
+    const day = new Date(h.date + 'T00:00:00').getDay();
+    return day !== 0 && day !== 6; // 일요일(0), 토요일(6) 제외
+  });
   const soxlHistory = pd.soxl_history || [];
 
   const last = history[history.length - 1];
