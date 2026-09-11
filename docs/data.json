@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-11T18:23:46.317426",
+  "updated_at": "2026-09-12T07:10:06.443532",
   "accounts": {
     "csuf": {
       "history": [
@@ -14,13 +14,17 @@
         {
           "date": "2026-09-11",
           "total_assets": 3265.54
+        },
+        {
+          "date": "2026-09-12",
+          "total_assets": 3382.28
         }
       ],
       "label": "csuf",
-      "total_invest": 3265.54,
+      "total_invest": 3382.28,
       "total_bought": 1930.4,
-      "cash": 293.3,
-      "pending_amount": 1041.84,
+      "cash": 1451.88,
+      "pending_amount": 0.0,
       "tiers": [
         {
           "quantity": 8,
@@ -28,8 +32,8 @@
           "buy_date": "2026-09-08",
           "sell_target": 129.3062,
           "order_id": "v8SiG69WslKaUoPBbT-4G4Om0qIClL8dTBgeN-77zXDSXNCq6i2kaYfVTfG2Joez",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4Kxgbz2Ya5dWtkI1wigL4df5Qyq",
-          "held_days": 2
+          "pending_sell_order_id": null,
+          "held_days": 3
         },
         {
           "quantity": 8.0,
@@ -37,18 +41,11 @@
           "buy_date": "2026-09-10",
           "sell_target": 129.6461,
           "order_id": "v8SiG69WslKaUoPBbT-4GxXHDLgz7Ny0u1crFCuyTwpGEn56McdS4HyOqnrFH2nv",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4Kxgbw0DarDgRZqExUNelEHuLJu",
-          "held_days": 0
+          "pending_sell_order_id": null,
+          "held_days": 1
         }
       ],
-      "pending_order": {
-        "client_order_id": "csuf-buy-1789111804",
-        "order_id": "v8SiG69WslKaUoPBbT-4GyjuiqkquD7tAsKzU4KxgbwufZiROkIYK_1W-s6SDEbm",
-        "symbol": "SOXL",
-        "quantity": 9,
-        "order_price_used": 115.76,
-        "sell_target": 119.2328
-      }
+      "pending_order": null
     }
   },
   "p458dsuf": {
