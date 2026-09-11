@@ -79,6 +79,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
   border: 1px solid var(--border);
 }
 .metrics.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.metrics.cols-3 .value { font-size: 13px; }
 .metric {
   background: var(--bg);
   padding: 12px 8px;
@@ -133,7 +134,7 @@ h2.section-title {
   padding: 8px 0;
 }
 
-.chart-wrap { position: relative; height: 160px; }
+.chart-wrap { position: relative; height: 220px; }
 
 .legend-row {
   display: flex; gap: 14px; flex-wrap: wrap;
@@ -380,9 +381,16 @@ function renderP458Dsuf() {
   const soxlHistory = pd.soxl_history || [];
 
   const last = history[history.length - 1];
-  document.getElementById('pd-p458').textContent = last ? fmtMoney(last.p458) : '-';
-  document.getElementById('pd-dsuf').textContent = last ? fmtMoney(last.dsuf) : '-';
-  document.getElementById('pd-total').textContent = last ? fmtMoney(last.total) : '-';
+  const first = history[0];
+  function withPct(curVal, firstVal) {
+    if (!first || !firstVal) return fmtMoney(curVal);
+    const pct = (curVal / firstVal - 1) * 100;
+    const sign = pct >= 0 ? '+' : '';
+    return `${fmtMoney(curVal)} (${sign}${pct.toFixed(1)}%)`;
+  }
+  document.getElementById('pd-p458').textContent = last ? withPct(last.p458, first.p458) : '-';
+  document.getElementById('pd-dsuf').textContent = last ? withPct(last.dsuf, first.dsuf) : '-';
+  document.getElementById('pd-total').textContent = last ? withPct(last.total, first.total) : '-';
 
   const soxlMap = {};
   soxlHistory.forEach(s => { soxlMap[s.date] = s.close; });
