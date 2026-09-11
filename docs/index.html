@@ -241,6 +241,18 @@ function fmtMoney(n) {
   return '$' + Math.round(n).toLocaleString('en-US');
 }
 
+function monthTickCallback(labels) {
+  return function (val, idx) {
+    const d = labels[idx];
+    if (!d) return '';
+    const month = d.slice(5, 7);
+    if (idx === 0 || labels[idx - 1].slice(5, 7) !== month) {
+      return parseInt(month, 10) + '월';
+    }
+    return '';
+  };
+}
+
 function computePerformance(history) {
   if (!history || history.length < 2) return null;
   const first = history[0], last = history[history.length - 1];
@@ -307,12 +319,13 @@ function renderAccount(key) {
   }
 
   const history = acc.history || [];
+  const dates = history.map(h => h.date);
   const ctx = document.getElementById('trend');
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: history.map(h => h.date),
+      labels: dates,
       datasets: [{
         data: history.map(h => h.total_assets),
         borderColor: '#c9a227',
@@ -324,7 +337,17 @@ function renderAccount(key) {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { display: false },
+        x: {
+          display: true,
+          grid: { display: false },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            autoSkip: false,
+            maxRotation: 0,
+            callback: monthTickCallback(dates),
+          },
+        },
         y: {
           display: true,
           grid: { color: 'rgba(255,255,255,0.05)' },
@@ -418,7 +441,17 @@ function renderP458Dsuf() {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { display: false },
+        x: {
+          display: true,
+          grid: { display: false },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            autoSkip: false,
+            maxRotation: 0,
+            callback: monthTickCallback(labels),
+          },
+        },
         y: {
           display: true,
           grid: { color: 'rgba(255,255,255,0.05)' },
