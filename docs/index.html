@@ -516,9 +516,9 @@ fetch('./data.json?_=' + Date.now())
 
     if (data.usd_krw_rate) {
       const krw = grandTotalUsd * data.usd_krw_rate;
-      grandEl.textContent = `총자산(csuf+p458/dSuf): $${Math.round(grandTotalUsd).toLocaleString('en-US')} (₩${Math.round(krw).toLocaleString('en-US')})`;
+      grandEl.textContent = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} (₩${Math.round(krw).toLocaleString('en-US')})`;
     } else {
-      grandEl.textContent = `총자산(csuf+p458/dSuf): $${Math.round(grandTotalUsd).toLocaleString('en-US')} (환율 정보 없음)`;
+      grandEl.textContent = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} (환율 정보 없음)`;
     }
   })
   .catch(err => {
