@@ -173,6 +173,7 @@ footer {
 <div class="wrap">
   <header>
     <p class="updated" id="updated">불러오는 중...</p>
+    <p class="updated" id="grand-total" style="margin-top:4px; font-size:13px; color:var(--text);"></p>
   </header>
 
   <nav class="tabs" id="tabs"></nav>
@@ -505,6 +506,23 @@ fetch('./data.json?_=' + Date.now())
     }
 
     if (firstBtn) firstBtn.click();
+
+    const csufAcc = Object.values(data.accounts || {}).find(a => a.label === 'csuf');
+    const csufTotalInvest = csufAcc ? csufAcc.total_invest : 0;
+    const pdHistory = (data.p458dsuf && data.p458dsuf.history) || [];
+    const pdLatestTotal = pdHistory.length ? pdHistory[pdHistory.length - 1].total : 0;
+    const grandTotalUsd = csufTotalInvest + pdLatestTotal;
+    const grandEl = document.getElementById('grand-total');
+
+    fetch('https://api.frankfurter.app/latest?from=USD&to=KRW')
+      .then(r => r.json())
+      .then(fx => {
+        const krw = grandTotalUsd * fx.rates.KRW;
+        grandEl.textContent = `총자산(csuf+p458/dSuf): $${Math.round(grandTotalUsd).toLocaleString('en-US')} (₩${Math.round(krw).toLocaleString('en-US')})`;
+      })
+      .catch(() => {
+        grandEl.textContent = `총자산(csuf+p458/dSuf): $${Math.round(grandTotalUsd).toLocaleString('en-US')} (환율 조회 실패)`;
+      });
   })
   .catch(err => {
     document.getElementById('updated').textContent = '데이터를 불러오지 못했습니다.';
