@@ -428,6 +428,37 @@ function renderP458Dsuf() {
   const totalPct = toPctSeries(history.map(h => h.total));
   const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null));
 
+  // 마우스오버 시 보여줄 실제값(달러/가격) 맵 — 인덱스로 조회
+  const realValues = {
+    p458: history.map(h => h.p458),
+    dSuf: history.map(h => h.dsuf),
+    Total: history.map(h => h.total),
+    SOXL: labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null),
+  };
+
+  // 월이 바뀌는 인덱스마다 세로 구분선을 그리는 플러그인
+  const monthDividerPlugin = {
+    id: 'monthDivider',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const xScale = scales.x;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      labels.forEach((d, idx) => {
+        if (idx === 0) return;
+        if (d.slice(5, 7) !== labels[idx - 1].slice(5, 7)) {
+          const x = xScale.getPixelForValue(idx);
+          ctx.beginPath();
+          ctx.moveTo(x, chartArea.top);
+          ctx.lineTo(x, chartArea.bottom);
+          ctx.stroke();
+        }
+      });
+      ctx.restore();
+    },
+  };
+
   const ctx = document.getElementById('pd-chart');
   if (pdChart) pdChart.destroy();
   pdChart = new Chart(ctx, {
@@ -441,9 +472,26 @@ function renderP458Dsuf() {
         { label: 'SOXL', data: soxlPct, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1.5, borderDash: [3,3], tension: 0.2 },
       ]
     },
+    plugins: [monthDividerPlugin],
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (item) => {
+              const idx = item.dataIndex;
+              const name = item.dataset.label;
+              const raw = realValues[name] ? realValues[name][idx] : null;
+              const pct = item.parsed.y;
+              const pctStr = (pct === null || pct === undefined) ? '-' : `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+              if (raw === null || raw === undefined) return `${name}: ${pctStr}`;
+              const realStr = name === 'SOXL' ? `$${raw.toFixed(2)}` : fmtMoney(raw);
+              return `${name}: ${realStr} (${pctStr})`;
+            },
+          },
+        },
+      },
       scales: {
         x: {
           display: true,
