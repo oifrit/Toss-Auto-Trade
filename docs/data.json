@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-16T17:16:51.430034",
+  "updated_at": "2026-09-16T17:53:20.832308",
   "accounts": {
     "csuf": {
       "history": [
@@ -48,7 +48,7 @@
           "buy_date": "2026-09-10",
           "sell_target": 129.6461,
           "order_id": "v8SiG69WslKaUoPBbT-4GxXHDLgz7Ny0u1crFCuyTwpGEn56McdS4HyOqnrFH2nv",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLvdZ9aTyq99s_CZD4-ldCJJ",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLtDexxW_AkIjRUWGYzU1zNN",
           "held_days": 3
         },
         {
@@ -57,19 +57,19 @@
           "buy_date": "2026-09-14",
           "sell_target": 125.4746,
           "order_id": "v8SiG69WslKaUoPBbT-4G2TUtzR0lYG4ivhb6Iha4dqASi4dKmHr6dpf8Y6aLrsN",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLsrocoIdEBAJig8cseLhQqv",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLtwSkF0L_T0m-zFuSsNFppH",
           "held_days": 1
         }
       ],
       "pending_order": {
-        "client_order_id": "csuf-buy-1789546608",
-        "order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLsz8Qyql-kh8L4yyyXvUpQa",
+        "client_order_id": "csuf-buy-1789548798",
+        "order_id": "v8SiG69WslKaUoPBbT-4G7xrLr-q3bm6S2uJ6kIvqLtIBi8Rp6j2MZnRbVyctX3Z",
         "symbol": "SOXL",
         "quantity": 10,
         "order_price_used": 102.32,
         "sell_target": 105.3896
       },
-      "buffer_usd": 0.0
+      "buffer_usd": 0
     }
   },
   "p458dsuf": {
@@ -1842,5 +1842,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1367.92
+  "usd_krw_rate": 1369.17
 }
