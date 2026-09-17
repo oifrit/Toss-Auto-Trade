@@ -561,11 +561,25 @@ fetch('./data.json?_=' + Date.now())
     const grandTotalUsd = csufTotalInvest + pdLatestTotal;
     const grandEl = document.getElementById('grand-total');
 
+    // 전일 대비 변동분: 각 계좌 히스토리의 마지막 두 스냅샷 차이를 더함
+    // (csuf/p458dsuf 히스토리 날짜가 서로 안 맞아도 각자 자기 시계열 기준으로 변동을 구하므로 문제없음)
+    const csufHist = (csufAcc && csufAcc.history) || [];
+    const csufDelta = csufHist.length >= 2
+      ? csufHist[csufHist.length - 1].total_assets - csufHist[csufHist.length - 2].total_assets
+      : 0;
+    const pdDelta = pdHistory.length >= 2
+      ? pdHistory[pdHistory.length - 1].total - pdHistory[pdHistory.length - 2].total
+      : 0;
+    const grandDelta = csufDelta + pdDelta;
+    const deltaSign = grandDelta > 0 ? '+' : '';
+    const deltaColor = grandDelta > 0 ? 'var(--teal)' : (grandDelta < 0 ? 'var(--red)' : 'var(--text-dim)');
+    const deltaHtml = `<span style="color:${deltaColor}">(${deltaSign}${Math.round(grandDelta).toLocaleString('en-US')})</span>`;
+
     if (data.usd_krw_rate) {
       const krw = grandTotalUsd * data.usd_krw_rate;
-      grandEl.textContent = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} (₩${Math.round(krw).toLocaleString('en-US')})`;
+      grandEl.innerHTML = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} ${deltaHtml} (₩${Math.round(krw).toLocaleString('en-US')})`;
     } else {
-      grandEl.textContent = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} (환율 정보 없음)`;
+      grandEl.innerHTML = `총자산: $${Math.round(grandTotalUsd).toLocaleString('en-US')} ${deltaHtml} (환율 정보 없음)`;
     }
   })
   .catch(err => {
