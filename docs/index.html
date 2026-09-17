@@ -16,6 +16,7 @@
   --gold: #c9a227;
   --teal: #4fb3a5;
   --red: #c1554b;
+  --blue: #5b8fd6;
   --violet: #8a7fd6;
   --sans: 'Space Grotesk', -apple-system, sans-serif;
   --mono: 'JetBrains Mono', monospace;
@@ -572,7 +573,8 @@ fetch('./data.json?_=' + Date.now())
       : 0;
     const grandDelta = csufDelta + pdDelta;
     const deltaSign = grandDelta > 0 ? '+' : '';
-    const deltaColor = grandDelta > 0 ? 'var(--teal)' : (grandDelta < 0 ? 'var(--red)' : 'var(--text-dim)');
+    // 국내 증시 관행: 상승(+)은 빨강, 하락(-)은 파랑
+    const deltaColor = grandDelta > 0 ? 'var(--red)' : (grandDelta < 0 ? 'var(--blue)' : 'var(--text-dim)');
     const deltaHtml = `<span style="color:${deltaColor}">(${deltaSign}${Math.round(grandDelta).toLocaleString('en-US')})</span>`;
 
     if (data.usd_krw_rate) {
