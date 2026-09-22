@@ -94,13 +94,13 @@ h2.section-title {
   padding: 10px 0;
   border-bottom: 1px solid var(--border);
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 12px;
 }
 .tier-row:last-child { border-bottom: none; }
 .tier-row .main { color: var(--text); }
-.tier-row .sub { color: var(--text-dim); font-size: 12px; }
+.tier-row .sub { color: var(--text-dim); font-size: 11px; }
 .tier-row .badge {
-  font-size: 11px;
+  font-size: 10px;
   padding: 2px 8px;
   border: 1px solid var(--border);
   color: var(--text-dim);
@@ -110,9 +110,22 @@ h2.section-title {
 
 .empty {
   color: var(--text-dim);
-  font-size: 13px;
+  font-size: 12px;
   font-family: var(--mono);
   padding: 8px 0;
+}
+
+.csuf-summary {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+}
+.csuf-summary .sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-left: 6px;
 }
 
 .chart-wrap { position: relative; height: 220px; }
@@ -143,12 +156,7 @@ footer {
   <!-- csuf 전용 뷰 -->
   <div id="view-csuf">
     <section class="panel">
-      <div class="metrics">
-        <div class="metric gold"><p class="label">총투자</p><p class="value" id="m-invest">-</p></div>
-        <div class="metric"><p class="label">총매입</p><p class="value" id="m-bought">-</p></div>
-        <div class="metric teal"><p class="label">잔금</p><p class="value" id="m-cash">-</p></div>
-        <div class="metric" id="m-pending-card" style="display:none;"><p class="label">미체결</p><p class="value" id="m-pending">-</p></div>
-      </div>
+      <p class="csuf-summary" id="csuf-summary">-</p>
     </section>
 
     <section class="panel">
@@ -244,17 +252,18 @@ function makeTransferPlugin(labels, transfers, matchFn, color, sign) {
 function renderAccount(key) {
   const acc = currentData.accounts[key];
 
-  const bufferNote = acc.buffer_usd ? `(${Math.round(acc.buffer_usd)})` : '';
-  document.getElementById('m-invest').textContent = fmtMoney(acc.total_invest) + bufferNote;
-  document.getElementById('m-bought').textContent = fmtMoney(acc.total_bought);
-  document.getElementById('m-cash').textContent = fmtMoney(acc.cash);
-  const pendingCard = document.getElementById('m-pending-card');
-  if (acc.pending_amount && acc.pending_amount > 0) {
-    pendingCard.style.display = '';
-    document.getElementById('m-pending').textContent = fmtMoney(acc.pending_amount);
-  } else {
-    pendingCard.style.display = 'none';
+  const buffer = Math.round(acc.buffer_usd || 0);
+  const tierCount = (acc.tiers || []).length;
+  const accHistory = acc.history || [];
+  let pct = 0;
+  if (accHistory.length >= 2) {
+    const prevAssets = accHistory[accHistory.length - 2].total_assets;
+    const currAssets = accHistory[accHistory.length - 1].total_assets;
+    if (prevAssets) pct = (currAssets / prevAssets - 1) * 100;
   }
+  const pctStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  document.getElementById('csuf-summary').innerHTML =
+    `${fmtMoney(acc.total_invest)} <span class="sub">(${buffer})(${pctStr})(${tierCount})</span>`;
 
   const tiersEl = document.getElementById('tiers');
   tiersEl.innerHTML = '';
