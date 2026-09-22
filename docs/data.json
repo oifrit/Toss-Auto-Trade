@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T18:10:05.237255",
+  "updated_at": "2026-09-22T19:23:02.376276",
   "accounts": {
     "csuf": {
       "history": [
@@ -57,13 +57,13 @@
         },
         {
           "date": "2026-09-22",
-          "total_assets": 10004.23
+          "total_assets": 10000.97
         }
       ],
       "label": "csuf",
-      "total_invest": 10004.23,
+      "total_invest": 10000.97,
       "total_bought": 0,
-      "cash": 6739.84,
+      "cash": 6736.58,
       "pending_amount": 3264.39,
       "tiers": [],
       "pending_order": {
@@ -255,5 +255,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1359.52
+  "usd_krw_rate": 1358.72
 }
