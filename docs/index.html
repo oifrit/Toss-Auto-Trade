@@ -174,11 +174,6 @@ footer {
     </section>
 
     <section class="panel">
-      <h2 class="section-title">자산 추이</h2>
-      <div class="chart-wrap"><canvas id="trend"></canvas></div>
-    </section>
-
-    <section class="panel">
       <h2 class="section-title">백테스트 대비 실전 (CAGR)</h2>
       <div id="compare"></div>
     </section>
@@ -215,7 +210,6 @@ footer {
 <script>
 const BACKTEST_CAGR = 194; // csuf v2 백테스트 CAGR (%), 필요시 이 숫자만 갱신
 
-let chart = null;
 let pdChart = null;
 let currentData = null;
 
@@ -336,52 +330,6 @@ function renderAccount(key) {
   }
 
   const history = acc.history || [];
-  const dates = history.map(h => h.date);
-  const inTransferPlugin = makeTransferPlugin(
-    dates, currentData.transfers, t => t.to === key, '#4fb3a5', '+'
-  );
-  const ctx = document.getElementById('trend');
-  if (chart) chart.destroy();
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: dates,
-      datasets: [{
-        data: history.map(h => h.total_assets),
-        borderColor: '#c9a227',
-        backgroundColor: 'rgba(201,162,39,0.08)',
-        fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2,
-      }]
-    },
-    plugins: [inTransferPlugin],
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          display: true,
-          grid: { display: false },
-          ticks: {
-            color: '#8b909c',
-            font: { family: 'JetBrains Mono', size: 10 },
-            autoSkip: false,
-            maxRotation: 0,
-            callback: monthTickCallback(dates),
-          },
-        },
-        y: {
-          display: true,
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: {
-            color: '#8b909c',
-            font: { family: 'JetBrains Mono', size: 10 },
-            callback: (v) => '$' + Math.round(v).toLocaleString('en-US'),
-            maxTicksLimit: 4,
-          },
-        },
-      },
-    }
-  });
 
   const perf = computePerformance(history);
   const compareEl = document.getElementById('compare');
