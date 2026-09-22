@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T20:10:48.424934",
+  "updated_at": "2026-09-22T20:21:40.230378",
   "accounts": {
     "csuf": {
       "history": [
@@ -67,8 +67,8 @@
       "pending_amount": 3278.58,
       "tiers": [],
       "pending_order": {
-        "client_order_id": "csuf-buy-1790075446-0",
-        "order_id": "v8SiG69WslKaUoPBbT-4G6LKqry04pGIKPTGfbc5RPLzmz5fo_kb_pG0CiXaOU6V",
+        "client_order_id": "csuf-buy-1790076097-0",
+        "order_id": "v8SiG69WslKaUoPBbT-4G6LKqry04pGIKPTGfbc5RPLUqRbmVuoZKB_G9VWbAWit",
         "symbol": "SOXL",
         "quantity": 21,
         "order_price_used": 156.123,
@@ -255,5 +255,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1360.07
+  "usd_krw_rate": 1360.3
 }
