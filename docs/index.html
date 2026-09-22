@@ -257,8 +257,13 @@ function renderAccount(key) {
   const accHistory = acc.history || [];
   let pct = 0;
   if (accHistory.length >= 2) {
+    const lastEntry = accHistory[accHistory.length - 1];
     const prevAssets = accHistory[accHistory.length - 2].total_assets;
-    const currAssets = accHistory[accHistory.length - 1].total_assets;
+    // 이체로 들어온 금액은 매매손익이 아니므로 등락율 계산에서 빼고 본다
+    const transferIn = (currentData.transfers || [])
+      .filter(t => t.to === key && t.date === lastEntry.date)
+      .reduce((sum, t) => sum + t.amount, 0);
+    const currAssets = lastEntry.total_assets - transferIn;
     if (prevAssets) pct = (currAssets / prevAssets - 1) * 100;
   }
   const pctStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
