@@ -125,23 +125,6 @@ h2.section-title {
 .legend-row span { display: flex; align-items: center; gap: 5px; }
 .legend-row i { width: 9px; height: 9px; display: inline-block; border-radius: 1px; }
 
-.compare-row { margin-bottom: 14px; }
-.compare-row .top {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--mono);
-  font-size: 13px;
-  margin-bottom: 5px;
-}
-.compare-row .bar {
-  height: 6px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-}
-.compare-row .bar-fill { height: 100%; }
-.compare-row .bar-fill.gold { background: var(--gold); }
-.compare-row .bar-fill.teal { background: var(--teal); }
-
 footer {
   margin-top: 30px;
   font-family: var(--mono);
@@ -171,11 +154,6 @@ footer {
     <section class="panel">
       <h2 class="section-title">보유 티어</h2>
       <div id="tiers"></div>
-    </section>
-
-    <section class="panel">
-      <h2 class="section-title">백테스트 대비 실전 (CAGR)</h2>
-      <div id="compare"></div>
     </section>
   </div>
 
@@ -208,8 +186,6 @@ footer {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-const BACKTEST_CAGR = 194; // csuf v2 백테스트 CAGR (%), 필요시 이 숫자만 갱신
-
 let pdChart = null;
 let currentData = null;
 
@@ -265,20 +241,6 @@ function makeTransferPlugin(labels, transfers, matchFn, color, sign) {
   };
 }
 
-function computePerformance(history) {
-  if (!history || history.length < 2) return null;
-  const first = history[0], last = history[history.length - 1];
-  const days = (new Date(last.date) - new Date(first.date)) / 86400000;
-  if (days <= 0 || first.total_assets <= 0) return null;
-  const totalReturn = (last.total_assets / first.total_assets - 1) * 100;
-  if (days < 30) {
-    return { mode: 'cumulative', value: totalReturn, days };
-  }
-  const years = days / 365.25;
-  const cagr = (Math.pow(last.total_assets / first.total_assets, 1 / years) - 1) * 100;
-  return { mode: 'cagr', value: cagr, days };
-}
-
 function renderAccount(key) {
   const acc = currentData.accounts[key];
 
@@ -329,33 +291,6 @@ function renderAccount(key) {
     }
   }
 
-  const history = acc.history || [];
-
-  const perf = computePerformance(history);
-  const compareEl = document.getElementById('compare');
-  const actualPct = perf === null ? 0 : Math.max(perf.value, 0);
-  const maxRef = Math.max(BACKTEST_CAGR, actualPct, 1);
-  const actualLabel = perf === null
-    ? '데이터 부족'
-    : (perf.mode === 'cumulative'
-        ? `${perf.value.toFixed(1)}% (누적, ${Math.round(perf.days)}일)`
-        : `${perf.value.toFixed(1)}% (연환산)`);
-  compareEl.innerHTML = `
-    <div class="compare-row">
-      <div class="top"><span>백테스트 (연환산)</span><span>${BACKTEST_CAGR}%</span></div>
-      <div class="bar"><div class="bar-fill gold" style="width:${(BACKTEST_CAGR/maxRef*100).toFixed(1)}%"></div></div>
-    </div>
-    <div class="compare-row">
-      <div class="top"><span>실전</span><span>${actualLabel}</span></div>
-      <div class="bar"><div class="bar-fill teal" style="width:${(actualPct/maxRef*100).toFixed(1)}%"></div></div>
-    </div>
-  `;
-  if (perf && perf.mode === 'cumulative') {
-    const note = document.createElement('p');
-    note.style.cssText = 'font-family:var(--mono); font-size:11px; color:var(--text-dim); margin-top:6px;';
-    note.textContent = '※ 30일 미만 데이터라 연환산 대신 누적수익률로 표시 중';
-    compareEl.appendChild(note);
-  }
 }
 
 function toPctSeries(values) {
