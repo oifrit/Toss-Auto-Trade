@@ -1888,5 +1888,19 @@
       }
     ]
   },
-  "usd_krw_rate": 1375.0
+  "usd_krw_rate": 1375.0,
+  "transfers": [
+    {
+      "date": "2026-09-22",
+      "from": "dsuf",
+      "to": "csuf",
+      "amount": 2247
+    },
+    {
+      "date": "2026-09-22",
+      "from": "p458",
+      "to": "csuf",
+      "amount": 4262
+    }
+  ]
 }

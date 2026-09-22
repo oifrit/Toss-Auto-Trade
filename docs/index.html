@@ -255,6 +255,42 @@ function monthTickCallback(labels) {
   };
 }
 
+// labels(날짜 배열) 중 matchFn을 통과하는 이체(transfer)들을 날짜별로 합산해
+// 세로 점선 + 금액 라벨로 표시하는 Chart.js 플러그인을 만든다.
+function makeTransferPlugin(labels, transfers, matchFn, color, sign) {
+  const byDate = {};
+  (transfers || []).filter(matchFn).forEach(t => {
+    byDate[t.date] = (byDate[t.date] || 0) + t.amount;
+  });
+  return {
+    id: 'transferMarker',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const xScale = scales.x;
+      ctx.save();
+      Object.keys(byDate).forEach(date => {
+        const idx = labels.indexOf(date);
+        if (idx === -1) return;
+        const x = xScale.getPixelForValue(idx);
+        ctx.strokeStyle = color;
+        ctx.setLineDash([4, 3]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = color;
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = x > (chartArea.left + chartArea.right) / 2 ? 'right' : 'left';
+        const label = `이체 ${sign}$${Math.round(byDate[date]).toLocaleString('en-US')}`;
+        ctx.fillText(label, x + (ctx.textAlign === 'right' ? -4 : 4), chartArea.top + 10);
+      });
+      ctx.restore();
+    },
+  };
+}
+
 function computePerformance(history) {
   if (!history || history.length < 2) return null;
   const first = history[0], last = history[history.length - 1];
@@ -323,6 +359,9 @@ function renderAccount(key) {
 
   const history = acc.history || [];
   const dates = history.map(h => h.date);
+  const inTransferPlugin = makeTransferPlugin(
+    dates, currentData.transfers, t => t.to === key, '#4fb3a5', '+'
+  );
   const ctx = document.getElementById('trend');
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
@@ -336,6 +375,7 @@ function renderAccount(key) {
         fill: true, tension: 0.25, pointRadius: 0, borderWidth: 2,
       }]
     },
+    plugins: [inTransferPlugin],
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
@@ -460,6 +500,10 @@ function renderP458Dsuf() {
     },
   };
 
+  const outTransferPlugin = makeTransferPlugin(
+    labels, currentData.transfers, t => t.from === 'p458' || t.from === 'dsuf', '#c1554b', '-'
+  );
+
   const ctx = document.getElementById('pd-chart');
   if (pdChart) pdChart.destroy();
   pdChart = new Chart(ctx, {
@@ -473,7 +517,7 @@ function renderP458Dsuf() {
         { label: 'SOXL', data: soxlPct, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1.5, borderDash: [3,3], tension: 0.2 },
       ]
     },
-    plugins: [monthDividerPlugin],
+    plugins: [monthDividerPlugin, outTransferPlugin],
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
