@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T20:34:58.218251",
+  "updated_at": "2026-09-23T07:10:08.164878",
   "accounts": {
     "csuf": {
       "history": [
@@ -58,22 +58,29 @@
         {
           "date": "2026-09-22",
           "total_assets": 10004.23
+        },
+        {
+          "date": "2026-09-23",
+          "total_assets": 10001.04
         }
       ],
       "label": "csuf",
-      "total_invest": 10004.23,
-      "total_bought": 0,
-      "cash": 6725.65,
-      "pending_amount": 3278.58,
-      "tiers": [],
-      "pending_order": {
-        "client_order_id": "csuf-buy-1790076896-0",
-        "order_id": "v8SiG69WslKaUoPBbT-4G6LKqry04pGIKPTGfbc5RPK9ANsQoJzC_oymbNPzOK9f",
-        "symbol": "SOXL",
-        "quantity": 21,
-        "order_price_used": 156.123,
-        "sell_target": 146.1879
-      },
+      "total_invest": 10001.04,
+      "total_bought": 3190.95,
+      "cash": 6810.09,
+      "pending_amount": 0.0,
+      "tiers": [
+        {
+          "quantity": 21.0,
+          "buy_price": 151.95,
+          "buy_date": "2026-09-22",
+          "sell_target": 146.1879,
+          "order_id": "v8SiG69WslKaUoPBbT-4G6LKqry04pGIKPTGfbc5RPK9ANsQoJzC_oymbNPzOK9f",
+          "pending_sell_order_id": null,
+          "held_days": 0
+        }
+      ],
+      "pending_order": null,
       "buffer_usd": 0
     }
   },
@@ -255,5 +262,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1359.98
+  "usd_krw_rate": 1354.5
 }
