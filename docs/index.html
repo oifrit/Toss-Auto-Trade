@@ -69,7 +69,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 }
 .metric .value {
   font-family: var(--mono);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   margin: 0;
 }
@@ -78,10 +78,11 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 .metric.violet .value { color: var(--violet); }
 .metric.blue .value { color: var(--blue); }
 .metric .value .sub {
-  font-size: 11px;
+  display: block;
+  font-size: 10px;
   font-weight: 500;
   color: var(--text-dim);
-  margin-left: 4px;
+  margin-top: 3px;
 }
 
 h2.section-title {
@@ -220,11 +221,11 @@ function renderP458Dsuf() {
     if (!first || !firstVal) return fmtMoney(curVal);
     const pct = (curVal / firstVal - 1) * 100;
     const sign = pct >= 0 ? '+' : '';
-    return `${fmtMoney(curVal)} (${sign}${pct.toFixed(1)}%)`;
+    return `${fmtMoney(curVal)} <span class="sub">(${sign}${pct.toFixed(1)}%)</span>`;
   }
-  document.getElementById('pd-p458').textContent = last ? withPct(last.p458, first.p458) : '-';
-  document.getElementById('pd-dsuf').textContent = last ? withPct(last.dsuf, first.dsuf) : '-';
-  document.getElementById('pd-total').textContent = last ? withPct(last.total, first.total) : '-';
+  document.getElementById('pd-p458').innerHTML = last ? withPct(last.p458, first.p458) : '-';
+  document.getElementById('pd-dsuf').innerHTML = last ? withPct(last.dsuf, first.dsuf) : '-';
+  document.getElementById('pd-total').innerHTML = last ? withPct(last.total, first.total) : '-';
 
   // csuf 타일: $금액 뒤에 (버퍼)(전일대비 등락율)(보유 티어수)를 작은 글씨로 붙여서 표기
   const csufAcc = Object.values(currentData.accounts || {}).find(a => a.label === 'csuf');
