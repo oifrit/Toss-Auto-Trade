@@ -48,8 +48,6 @@ section.panel {
   padding: 18px 0;
 }
 section.panel:first-of-type { border-top: none; padding-top: 0; }
-#view-p458dsuf { margin-top: 8px; }
-#view-p458dsuf > section.panel:first-of-type { border-top: 1px solid var(--border); padding-top: 18px; }
 
 .metrics {
   display: grid;
@@ -79,25 +77,18 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 .metric.teal .value { color: var(--teal); }
 .metric.violet .value { color: var(--violet); }
 .metric.blue .value { color: var(--blue); }
+.metric .value .sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-dim);
+  margin-left: 4px;
+}
 
 h2.section-title {
   font-size: 13px;
   color: var(--text-dim);
   font-weight: 600;
   margin: 0 0 12px;
-}
-
-.csuf-summary {
-  font-family: var(--mono);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--gold);
-}
-.csuf-summary .sub {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-dim);
-  margin-left: 6px;
 }
 
 .chart-wrap { position: relative; height: 220px; }
@@ -124,13 +115,6 @@ footer {
     <p class="updated" id="updated">불러오는 중...</p>
     <p class="updated" id="grand-total" style="margin-top:4px; font-size:13px; color:var(--text);"></p>
   </header>
-
-  <!-- csuf 전용 뷰 -->
-  <div id="view-csuf">
-    <section class="panel">
-      <p class="csuf-summary" id="csuf-summary">-</p>
-    </section>
-  </div>
 
   <!-- p458/dSuf/csuf 비교 뷰 -->
   <div id="view-p458dsuf">
@@ -216,28 +200,6 @@ function makeTransferPlugin(labels, transfers, matchFn, color, sign) {
   };
 }
 
-function renderAccount(key) {
-  const acc = currentData.accounts[key];
-
-  const buffer = Math.round(acc.buffer_usd || 0);
-  const tierCount = (acc.tiers || []).length;
-  const accHistory = acc.history || [];
-  let pct = 0;
-  if (accHistory.length >= 2) {
-    const lastEntry = accHistory[accHistory.length - 1];
-    const prevAssets = accHistory[accHistory.length - 2].total_assets;
-    // 이체로 들어온 금액은 매매손익이 아니므로 등락율 계산에서 빼고 본다
-    const transferIn = (currentData.transfers || [])
-      .filter(t => t.to === key && t.date === lastEntry.date)
-      .reduce((sum, t) => sum + t.amount, 0);
-    const currAssets = lastEntry.total_assets - transferIn;
-    if (prevAssets) pct = (currAssets / prevAssets - 1) * 100;
-  }
-  const pctStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
-  document.getElementById('csuf-summary').innerHTML =
-    `${fmtMoney(acc.total_invest)} <span class="sub">(${buffer})(${pctStr})(${tierCount})</span>`;
-}
-
 function toPctSeries(values) {
   const base = values.find(v => v !== null && v !== undefined && v !== 0);
   if (base === undefined) return values.map(() => null);
@@ -262,8 +224,31 @@ function renderP458Dsuf() {
   }
   document.getElementById('pd-p458').textContent = last ? withPct(last.p458, first.p458) : '-';
   document.getElementById('pd-dsuf').textContent = last ? withPct(last.dsuf, first.dsuf) : '-';
-  document.getElementById('pd-csuf').textContent = last ? withPct(last.csuf, first.csuf) : '-';
   document.getElementById('pd-total').textContent = last ? withPct(last.total, first.total) : '-';
+
+  // csuf 타일: $금액 뒤에 (버퍼)(전일대비 등락율)(보유 티어수)를 작은 글씨로 붙여서 표기
+  const csufAcc = Object.values(currentData.accounts || {}).find(a => a.label === 'csuf');
+  const pdCsufEl = document.getElementById('pd-csuf');
+  if (csufAcc) {
+    const buffer = Math.round(csufAcc.buffer_usd || 0);
+    const tierCount = (csufAcc.tiers || []).length;
+    const ch = csufAcc.history || [];
+    let csufPct = 0;
+    if (ch.length >= 2) {
+      const lastH = ch[ch.length - 1];
+      const prevAssets = ch[ch.length - 2].total_assets;
+      // 이체로 들어온 금액은 매매손익이 아니므로 등락율 계산에서 빼고 본다
+      const transferIn = (currentData.transfers || [])
+        .filter(t => t.to === 'csuf' && t.date === lastH.date)
+        .reduce((sum, t) => sum + t.amount, 0);
+      const currAssets = lastH.total_assets - transferIn;
+      if (prevAssets) csufPct = (currAssets / prevAssets - 1) * 100;
+    }
+    const csufPctStr = `${csufPct >= 0 ? '+' : ''}${csufPct.toFixed(1)}%`;
+    pdCsufEl.innerHTML = `${fmtMoney(csufAcc.total_invest)} <span class="sub">(${buffer})(${csufPctStr})(${tierCount})</span>`;
+  } else {
+    pdCsufEl.textContent = '-';
+  }
 
   const soxlMap = {};
   soxlHistory.forEach(s => { soxlMap[s.date] = s.close; });
@@ -378,10 +363,6 @@ fetch('./data.json?_=' + Date.now())
     currentData = data;
     document.getElementById('updated').textContent = '업데이트: ' + new Date(data.updated_at).toLocaleString('ko-KR');
 
-    // 탭 없이 한 페이지에 순서대로: csuf 개별 뷰 -> csuf/p458/dSuf 비교 뷰
-    const csufKey = Object.keys(data.accounts || {}).find(k => (data.accounts[k].label || k) === 'csuf')
-      || Object.keys(data.accounts || {})[0];
-    if (csufKey) renderAccount(csufKey);
     if (data.p458dsuf) renderP458Dsuf();
 
     // p458dsuf.history[].total은 이제 csuf(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
