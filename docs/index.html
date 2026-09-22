@@ -87,34 +87,6 @@ h2.section-title {
   margin: 0 0 12px;
 }
 
-.tier-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 12px;
-}
-.tier-row:last-child { border-bottom: none; }
-.tier-row .main { color: var(--text); }
-.tier-row .sub { color: var(--text-dim); font-size: 11px; }
-.tier-row .badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-}
-.tier-row .badge.warn { color: var(--red); border-color: var(--red); }
-.tier-row .badge.ok { color: var(--teal); border-color: var(--teal); }
-
-.empty {
-  color: var(--text-dim);
-  font-size: 12px;
-  font-family: var(--mono);
-  padding: 8px 0;
-}
-
 .csuf-summary {
   font-family: var(--mono);
   font-size: 22px;
@@ -157,11 +129,6 @@ footer {
   <div id="view-csuf">
     <section class="panel">
       <p class="csuf-summary" id="csuf-summary">-</p>
-    </section>
-
-    <section class="panel">
-      <h2 class="section-title">보유 티어</h2>
-      <div id="tiers"></div>
     </section>
   </div>
 
@@ -269,42 +236,6 @@ function renderAccount(key) {
   const pctStr = `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
   document.getElementById('csuf-summary').innerHTML =
     `${fmtMoney(acc.total_invest)} <span class="sub">(${buffer})(${pctStr})(${tierCount})</span>`;
-
-  const tiersEl = document.getElementById('tiers');
-  tiersEl.innerHTML = '';
-  const tiers = acc.tiers || [];
-  if (tiers.length === 0 && !acc.pending_order) {
-    tiersEl.innerHTML = '<p class="empty">보유 중인 티어가 없습니다.</p>';
-  } else {
-    tiers.forEach((t) => {
-      const held = t.held_days;
-      const warn = typeof held === 'number' && held >= 3;
-      const row = document.createElement('div');
-      row.className = 'tier-row';
-      row.innerHTML = `
-        <div>
-          <div class="main">${t.buy_date} · ${Math.round(t.quantity)}주</div>
-          <div class="sub">$${t.buy_price.toFixed(2)} → $${t.sell_target.toFixed(2)}</div>
-        </div>
-        <span class="badge ${warn ? 'warn' : 'ok'}">${held ?? '?'}일</span>
-      `;
-      tiersEl.appendChild(row);
-    });
-    if (acc.pending_order) {
-      const p = acc.pending_order;
-      const row = document.createElement('div');
-      row.className = 'tier-row';
-      row.innerHTML = `
-        <div>
-          <div class="main">체결대기 · ${Math.round(p.quantity)}주</div>
-          <div class="sub">$${p.order_price_used.toFixed(2)}</div>
-        </div>
-        <span class="badge">대기</span>
-      `;
-      tiersEl.appendChild(row);
-    }
-  }
-
 }
 
 function toPctSeries(values) {
