@@ -77,6 +77,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 .metric.teal .value { color: var(--teal); }
 .metric.violet .value { color: var(--violet); }
 .metric.blue .value { color: var(--blue); }
+.metric.red .value { color: var(--red); }
 .metric .value .sub {
   display: block;
   font-size: 10px;
@@ -121,9 +122,9 @@ footer {
   <div id="view-p458dsuf">
     <section class="panel">
       <div class="metrics">
-        <div class="metric blue"><p class="label">csuf(버퍼)</p><p class="value" id="pd-csuf">-</p></div>
-        <div class="metric gold"><p class="label">p458</p><p class="value" id="pd-p458">-</p></div>
-        <div class="metric teal"><p class="label">dSuf</p><p class="value" id="pd-dsuf">-</p></div>
+        <div class="metric gold"><p class="label">csuf(버퍼)</p><p class="value" id="pd-csuf">-</p></div>
+        <div class="metric blue"><p class="label">p458</p><p class="value" id="pd-p458">-</p></div>
+        <div class="metric red"><p class="label">dSuf</p><p class="value" id="pd-dsuf">-</p></div>
         <div class="metric violet"><p class="label">총자산</p><p class="value" id="pd-total">-</p></div>
       </div>
     </section>
@@ -132,9 +133,9 @@ footer {
       <h2 class="section-title">SOXL 대비 자산추이 (누적수익률 %)</h2>
       <div class="chart-wrap"><canvas id="pd-chart"></canvas></div>
       <div class="legend-row">
-        <span><i style="background:#5b8fd6"></i>csuf(버퍼)</span>
-        <span><i style="background:#c9a227"></i>p458</span>
-        <span><i style="background:#4fb3a5"></i>dSuf</span>
+        <span><i style="background:#c9a227"></i>csuf(버퍼)</span>
+        <span><i style="background:#5b8fd6"></i>p458</span>
+        <span><i style="background:#c1554b"></i>dSuf</span>
         <span><i style="background:#8a7fd6"></i>Total</span>
         <span><i style="background:#8b909c"></i>SOXL</span>
       </div>
@@ -304,9 +305,9 @@ function renderP458Dsuf() {
     data: {
       labels,
       datasets: [
-        { label: 'csuf(버퍼)', data: csufPct, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, tension: 0.2 },
-        { label: 'p458', data: p458Pct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, tension: 0.2 },
-        { label: 'dSuf', data: dsufPct, borderColor: '#4fb3a5', pointRadius: 0, borderWidth: 1, tension: 0.2 },
+        { label: 'csuf(버퍼)', data: csufPct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, tension: 0.2 },
+        { label: 'p458', data: p458Pct, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, tension: 0.2 },
+        { label: 'dSuf', data: dsufPct, borderColor: '#c1554b', pointRadius: 0, borderWidth: 1, tension: 0.2 },
         { label: 'Total', data: totalPct, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1, tension: 0.2 },
         { label: 'SOXL', data: soxlPct, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1, borderDash: [3,3], tension: 0.2 },
       ]
