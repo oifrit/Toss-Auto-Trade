@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-22T09:35:37.619924",
+  "updated_at": "2026-09-22T13:00:04.725186",
   "accounts": {
     "csuf": {
       "history": [
@@ -1892,7 +1892,7 @@
       }
     ]
   },
-  "usd_krw_rate": 1364.3,
+  "usd_krw_rate": 1359.0,
   "transfers": [
     {
       "date": "2026-09-22",
