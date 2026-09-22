@@ -99,6 +99,7 @@ section.panel:first-of-type { border-top: none; padding-top: 0; }
 .metric.gold .value { color: var(--gold); }
 .metric.teal .value { color: var(--teal); }
 .metric.violet .value { color: var(--violet); }
+.metric.blue .value { color: var(--blue); }
 
 h2.section-title {
   font-size: 13px;
@@ -209,9 +210,10 @@ footer {
   <!-- p458/dSuf 전용 뷰 -->
   <div id="view-p458dsuf" style="display:none;">
     <section class="panel">
-      <div class="metrics cols-3">
+      <div class="metrics">
         <div class="metric gold"><p class="label">p458 자산</p><p class="value" id="pd-p458">-</p></div>
         <div class="metric teal"><p class="label">dSuf 자산</p><p class="value" id="pd-dsuf">-</p></div>
+        <div class="metric blue"><p class="label">csuf 자산(버퍼)</p><p class="value" id="pd-csuf">-</p></div>
         <div class="metric violet"><p class="label">총자산</p><p class="value" id="pd-total">-</p></div>
       </div>
     </section>
@@ -222,6 +224,7 @@ footer {
       <div class="legend-row">
         <span><i style="background:#c9a227"></i>p458</span>
         <span><i style="background:#4fb3a5"></i>dSuf</span>
+        <span><i style="background:#5b8fd6"></i>csuf(버퍼)</span>
         <span><i style="background:#8a7fd6"></i>Total</span>
         <span><i style="background:#8b909c"></i>SOXL</span>
       </div>
@@ -451,6 +454,7 @@ function renderP458Dsuf() {
   const last = history[history.length - 1];
   const first = history[0];
   function withPct(curVal, firstVal) {
+    if (curVal === null || curVal === undefined) return '-';
     if (!first || !firstVal) return fmtMoney(curVal);
     const pct = (curVal / firstVal - 1) * 100;
     const sign = pct >= 0 ? '+' : '';
@@ -458,6 +462,7 @@ function renderP458Dsuf() {
   }
   document.getElementById('pd-p458').textContent = last ? withPct(last.p458, first.p458) : '-';
   document.getElementById('pd-dsuf').textContent = last ? withPct(last.dsuf, first.dsuf) : '-';
+  document.getElementById('pd-csuf').textContent = last ? withPct(last.csuf, first.csuf) : '-';
   document.getElementById('pd-total').textContent = last ? withPct(last.total, first.total) : '-';
 
   const soxlMap = {};
@@ -466,6 +471,7 @@ function renderP458Dsuf() {
   const labels = history.map(h => h.date);
   const p458Pct = toPctSeries(history.map(h => h.p458));
   const dsufPct = toPctSeries(history.map(h => h.dsuf));
+  const csufPct = toPctSeries(history.map(h => h.csuf !== undefined ? h.csuf : null));
   const totalPct = toPctSeries(history.map(h => h.total));
   const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null));
 
@@ -473,6 +479,7 @@ function renderP458Dsuf() {
   const realValues = {
     p458: history.map(h => h.p458),
     dSuf: history.map(h => h.dsuf),
+    'csuf(버퍼)': history.map(h => h.csuf !== undefined ? h.csuf : null),
     Total: history.map(h => h.total),
     SOXL: labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null),
   };
@@ -513,6 +520,7 @@ function renderP458Dsuf() {
       datasets: [
         { label: 'p458', data: p458Pct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 2, tension: 0.2 },
         { label: 'dSuf', data: dsufPct, borderColor: '#4fb3a5', pointRadius: 0, borderWidth: 2, tension: 0.2 },
+        { label: 'csuf(버퍼)', data: csufPct, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 2, tension: 0.2 },
         { label: 'Total', data: totalPct, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 2, tension: 0.2 },
         { label: 'SOXL', data: soxlPct, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1.5, borderDash: [3,3], tension: 0.2 },
       ]
@@ -599,11 +607,15 @@ fetch('./data.json?_=' + Date.now())
 
     if (firstBtn) firstBtn.click();
 
+    // p458dsuf.history[].total은 이제 csuf(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
+    // 상단 총자산 요약은 그 csuf를 빼고 accounts.csuf.total_invest(실시간 값)로 대체해서
+    // 이중합산을 피하고 최신값을 쓴다.
     const csufAcc = Object.values(data.accounts || {}).find(a => a.label === 'csuf');
     const csufTotalInvest = csufAcc ? csufAcc.total_invest : 0;
     const pdHistory = (data.p458dsuf && data.p458dsuf.history) || [];
-    const pdLatestTotal = pdHistory.length ? pdHistory[pdHistory.length - 1].total : 0;
-    const grandTotalUsd = csufTotalInvest + pdLatestTotal;
+    const pdLatest = pdHistory.length ? pdHistory[pdHistory.length - 1] : null;
+    const pdP458DsufOnly = pdLatest ? (pdLatest.p458 + pdLatest.dsuf) : 0;
+    const grandTotalUsd = csufTotalInvest + pdP458DsufOnly;
     const grandEl = document.getElementById('grand-total');
 
     // 전일 대비 변동분: 각 계좌 히스토리의 마지막 두 스냅샷 차이를 더함
@@ -613,7 +625,8 @@ fetch('./data.json?_=' + Date.now())
       ? csufHist[csufHist.length - 1].total_assets - csufHist[csufHist.length - 2].total_assets
       : 0;
     const pdDelta = pdHistory.length >= 2
-      ? pdHistory[pdHistory.length - 1].total - pdHistory[pdHistory.length - 2].total
+      ? (pdHistory[pdHistory.length - 1].p458 + pdHistory[pdHistory.length - 1].dsuf)
+        - (pdHistory[pdHistory.length - 2].p458 + pdHistory[pdHistory.length - 2].dsuf)
       : 0;
     const grandDelta = csufDelta + pdDelta;
     const deltaSign = grandDelta > 0 ? '+' : '';
