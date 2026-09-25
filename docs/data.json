@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T09:31:24.452387",
+  "updated_at": "2026-09-25T09:34:01.980798",
   "accounts": {
     "csuf": {
       "history": [
@@ -93,7 +93,8 @@
           "buy_date": "2026-09-24",
           "sell_target": 150.7199,
           "order_id": "MANUAL_AUTO",
-          "pending_sell_order_id": null
+          "pending_sell_order_id": null,
+          "held_days": 0
         }
       ],
       "pending_order": null,
@@ -311,5 +312,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1372.72
+  "usd_krw_rate": 1372.16
 }
