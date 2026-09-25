@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T09:51:08.692582",
+  "updated_at": "2026-09-25T09:52:48.967849",
   "accounts": {
     "csuf": {
       "history": [
@@ -98,7 +98,7 @@
         }
       ],
       "pending_order": null,
-      "buffer_usd": 0
+      "buffer_usd": 0.0
     }
   },
   "p458dsuf": {
@@ -312,5 +312,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1371.78
+  "usd_krw_rate": 1371.61
 }
