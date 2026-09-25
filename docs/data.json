@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-25T09:18:26.818738",
+  "updated_at": "2026-09-25T09:31:16.875736",
   "accounts": {
     "csuf": {
       "history": [
@@ -74,8 +74,8 @@
       ],
       "label": "csuf",
       "total_invest": 9931.79,
-      "total_bought": 6275.33,
-      "cash": 3656.46,
+      "total_bought": 6335.18,
+      "cash": 3596.61,
       "pending_amount": 0.0,
       "tiers": [
         {
@@ -89,12 +89,11 @@
         },
         {
           "quantity": 22.0,
-          "buy_price": 145.64,
-          "buy_date": "2026-09-25",
-          "sell_target": 150.72,
-          "order_id": "MANUAL",
-          "pending_sell_order_id": null,
-          "held_days": 0
+          "buy_price": 148.3605,
+          "buy_date": "2026-09-24",
+          "sell_target": 150.7199,
+          "order_id": "MANUAL_AUTO",
+          "pending_sell_order_id": null
         }
       ],
       "pending_order": null,
@@ -312,5 +311,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1372.92
+  "usd_krw_rate": 1372.72
 }
