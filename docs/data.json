@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-28T18:41:15.410806",
+  "updated_at": "2026-09-28T18:42:51.660231",
   "accounts": {
     "csuf": {
       "history": [
@@ -96,13 +96,13 @@
           "buy_date": "2026-09-23",
           "sell_target": 156.5085,
           "order_id": "v8SiG69WslKaUoPBbT-4G85ukS8A-FZ291TG9A5ZhrOGhqO6yJc_Ea_C_9eOtzDY",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G6Hufy0SMl2SPQ_iwij0i3QI-350da3d0I5dfakwZrNQ",
           "held_days": 2
         }
       ],
       "pending_order": {
-        "client_order_id": "csuf-buy-1790588473-0",
-        "order_id": "v8SiG69WslKaUoPBbT-4G6Hufy0SMl2SPQ_iwij0i3Qmdqx-8lrmPbfE94B697jF",
+        "client_order_id": "csuf-buy-1790588569-0",
+        "order_id": "v8SiG69WslKaUoPBbT-4G6Hufy0SMl2SPQ_iwij0i3S0TZlXnDQWGEKldgEcf65M",
         "symbol": "SOXL",
         "quantity": 20,
         "order_price_used": 166.595,
@@ -347,5 +347,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1360.55
+  "usd_krw_rate": 1360.95
 }
