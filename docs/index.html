@@ -166,15 +166,22 @@ function monthTickCallback(labels) {
   };
 }
 
-function toPctSeries(values) {
-  const base = values.find(v => v !== null && v !== undefined && v !== 0);
+const PCT_BASE_DATE = '2026-09-21'; // 그래프 누적수익률 기준일
+
+function toPctSeries(values, baseIdx) {
+  let base;
+  if (baseIdx !== undefined && baseIdx >= 0 && values[baseIdx] !== null && values[baseIdx] !== undefined && values[baseIdx] !== 0) {
+    base = values[baseIdx];
+  } else {
+    base = values.find(v => v !== null && v !== undefined && v !== 0);
+  }
   if (base === undefined) return values.map(() => null);
   return values.map(v => (v === null || v === undefined) ? null : (v / base - 1) * 100);
 }
 
 function renderP458Dsuf() {
   const pd = currentData.p458dsuf || { history: [], soxl_history: [] };
-  // acct.xlsx 자체가 이미 거래일만 담고 있으므로(휴장일 행 삭제됨) 별도 필터 불필요.
+  // toss_p458dsuf_sync.py가 acct.xlsx 읽을 때 주말 행을 걸러내므로(2026-09-30 추가) history는 거래일만 담김.
   // 그래프는 이 history의 날짜에 해당하는 SOXL 캔들만 그대로 매칭해서 사용.
   const history = pd.history || [];
   const soxlHistory = pd.soxl_history || [];
@@ -215,11 +222,12 @@ function renderP458Dsuf() {
   soxlHistory.forEach(s => { soxlMap[s.date] = s.close; });
 
   const labels = history.map(h => h.date);
-  const p458Pct = toPctSeries(history.map(h => h.p458));
-  const dsufPct = toPctSeries(history.map(h => h.dsuf));
-  const csufPct = toPctSeries(history.map(h => h.csuf !== undefined ? h.csuf : null));
-  const totalPct = toPctSeries(history.map(h => h.total));
-  const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null));
+  const baseIdx = labels.findIndex(d => d >= PCT_BASE_DATE);
+  const p458Pct = toPctSeries(history.map(h => h.p458), baseIdx);
+  const dsufPct = toPctSeries(history.map(h => h.dsuf), baseIdx);
+  const csufPct = toPctSeries(history.map(h => h.csuf !== undefined ? h.csuf : null), baseIdx);
+  const totalPct = toPctSeries(history.map(h => h.total), baseIdx);
+  const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null), baseIdx);
 
   // 마우스오버 시 보여줄 실제값(달러/가격) 맵 — 인덱스로 조회
   const realValues = {
