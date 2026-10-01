@@ -118,11 +118,11 @@ footer {
     <p class="updated" id="grand-total" style="margin-top:4px; font-size:13px; color:var(--text);"></p>
   </header>
 
-  <!-- p458/dSuf/csuf 비교 뷰 -->
+  <!-- p458/dSuf/dSuf(Toss) 비교 뷰 -->
   <div id="view-p458dsuf">
     <section class="panel">
       <div class="metrics">
-        <div class="metric gold"><p class="label">csuf(버퍼)</p><p class="value" id="pd-csuf">-</p></div>
+        <div class="metric gold"><p class="label">dSuf(Toss)(버퍼)</p><p class="value" id="pd-dsuf-toss">-</p></div>
         <div class="metric blue"><p class="label">p458</p><p class="value" id="pd-p458">-</p></div>
         <div class="metric red"><p class="label">dSuf</p><p class="value" id="pd-dsuf">-</p></div>
         <div class="metric violet"><p class="label">총자산</p><p class="value" id="pd-total">-</p></div>
@@ -133,7 +133,7 @@ footer {
       <h2 class="section-title">SOXL 대비 자산추이 (누적수익률 %)</h2>
       <div class="chart-wrap"><canvas id="pd-chart"></canvas></div>
       <div class="legend-row">
-        <span><i style="background:#c9a227"></i>csuf(버퍼)</span>
+        <span><i style="background:#c9a227"></i>dSuf(Toss)(버퍼)</span>
         <span><i style="background:#5b8fd6"></i>p458</span>
         <span><i style="background:#c1554b"></i>dSuf</span>
         <span><i style="background:#8a7fd6"></i>Total</span>
@@ -198,23 +198,23 @@ function renderP458Dsuf() {
   document.getElementById('pd-dsuf').innerHTML = last ? withPct(last.dsuf, first.dsuf) : '-';
   document.getElementById('pd-total').innerHTML = last ? withPct(last.total, first.total) : '-';
 
-  // csuf 타일: $금액 뒤에 (버퍼)(전일대비 등락율)(보유 티어수)를 작은 글씨로 붙여서 표기
-  const csufAcc = Object.values(currentData.accounts || {}).find(a => a.label === 'csuf');
-  const pdCsufEl = document.getElementById('pd-csuf');
-  if (csufAcc) {
-    const buffer = Math.round(csufAcc.buffer_usd || 0);
-    const tierCount = (csufAcc.tiers || []).length;
-    const ch = csufAcc.history || [];
-    let csufPct = 0;
+  // dSuf(Toss) 타일: $금액 뒤에 (버퍼)(전일대비 등락율)(보유 티어수)를 작은 글씨로 붙여서 표기
+  const dsufTossAcc = Object.values(currentData.accounts || {}).find(a => a.label === 'dSuf(Toss)');
+  const pdDsufTossEl = document.getElementById('pd-dsuf-toss');
+  if (dsufTossAcc) {
+    const buffer = Math.round(dsufTossAcc.buffer_usd || 0);
+    const tierCount = (dsufTossAcc.tiers || []).length;
+    const ch = dsufTossAcc.history || [];
+    let dsufTossPct = 0;
     if (ch.length >= 2) {
       const prevAssets = ch[ch.length - 2].total_assets;
       const currAssets = ch[ch.length - 1].total_assets;
-      if (prevAssets) csufPct = (currAssets / prevAssets - 1) * 100;
+      if (prevAssets) dsufTossPct = (currAssets / prevAssets - 1) * 100;
     }
-    const csufPctStr = `${csufPct >= 0 ? '+' : ''}${csufPct.toFixed(1)}%`;
-    pdCsufEl.innerHTML = `${fmtMoney(csufAcc.total_invest)} <span class="sub">(${buffer})(${csufPctStr})(${tierCount})</span>`;
+    const dsufTossPctStr = `${dsufTossPct >= 0 ? '+' : ''}${dsufTossPct.toFixed(1)}%`;
+    pdDsufTossEl.innerHTML = `${fmtMoney(dsufTossAcc.total_invest)} <span class="sub">(${buffer})(${dsufTossPctStr})(${tierCount})</span>`;
   } else {
-    pdCsufEl.textContent = '-';
+    pdDsufTossEl.textContent = '-';
   }
 
   const soxlMap = {};
@@ -223,7 +223,7 @@ function renderP458Dsuf() {
   const labels = history.map(h => h.date);
   const p458Pct = toPctSeries(history.map(h => h.p458));
   const dsufPct = toPctSeries(history.map(h => h.dsuf));
-  const csufPct = toPctSeries(history.map(h => h.csuf !== undefined ? h.csuf : null));
+  const dsufTossPct = toPctSeries(history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null));
   const totalPct = toPctSeries(history.map(h => h.total));
   const soxlPct = toPctSeries(labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null));
 
@@ -231,7 +231,7 @@ function renderP458Dsuf() {
   const realValues = {
     p458: history.map(h => h.p458),
     dSuf: history.map(h => h.dsuf),
-    'csuf(버퍼)': history.map(h => h.csuf !== undefined ? h.csuf : null),
+    'dSuf(Toss)(버퍼)': history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null),
     Total: history.map(h => h.total),
     SOXL: labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null),
   };
@@ -266,7 +266,7 @@ function renderP458Dsuf() {
     data: {
       labels,
       datasets: [
-        { label: 'csuf(버퍼)', data: csufPct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
+        { label: 'dSuf(Toss)(버퍼)', data: dsufTossPct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'p458', data: p458Pct, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'dSuf', data: dsufPct, borderColor: '#c1554b', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'Total', data: totalPct, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
@@ -328,28 +328,28 @@ fetch('./data.json?_=' + Date.now())
 
     if (data.p458dsuf) renderP458Dsuf();
 
-    // p458dsuf.history[].total은 이제 csuf(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
-    // 상단 총자산 요약은 그 csuf를 빼고 accounts.csuf.total_invest(실시간 값)로 대체해서
+    // p458dsuf.history[].total은 이제 dSuf(Toss)(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
+    // 상단 총자산 요약은 그 dSuf(Toss)를 빼고 accounts.dsuf_toss.total_invest(실시간 값)로 대체해서
     // 이중합산을 피하고 최신값을 쓴다.
-    const csufAcc = Object.values(data.accounts || {}).find(a => a.label === 'csuf');
-    const csufTotalInvest = csufAcc ? csufAcc.total_invest : 0;
+    const dsufTossAcc = Object.values(data.accounts || {}).find(a => a.label === 'dSuf(Toss)');
+    const dsufTossTotalInvest = dsufTossAcc ? dsufTossAcc.total_invest : 0;
     const pdHistory = (data.p458dsuf && data.p458dsuf.history) || [];
     const pdLatest = pdHistory.length ? pdHistory[pdHistory.length - 1] : null;
     const pdP458DsufOnly = pdLatest ? (pdLatest.p458 + pdLatest.dsuf) : 0;
-    const grandTotalUsd = csufTotalInvest + pdP458DsufOnly;
+    const grandTotalUsd = dsufTossTotalInvest + pdP458DsufOnly;
     const grandEl = document.getElementById('grand-total');
 
     // 전일 대비 변동분: 각 계좌 히스토리의 마지막 두 스냅샷 차이를 더함
-    // (csuf/p458dsuf 히스토리 날짜가 서로 안 맞아도 각자 자기 시계열 기준으로 변동을 구하므로 문제없음)
-    const csufHist = (csufAcc && csufAcc.history) || [];
-    const csufDelta = csufHist.length >= 2
-      ? csufHist[csufHist.length - 1].total_assets - csufHist[csufHist.length - 2].total_assets
+    // (dSuf(Toss)/p458dsuf 히스토리 날짜가 서로 안 맞아도 각자 자기 시계열 기준으로 변동을 구하므로 문제없음)
+    const dsufTossHist = (dsufTossAcc && dsufTossAcc.history) || [];
+    const dsufTossDelta = dsufTossHist.length >= 2
+      ? dsufTossHist[dsufTossHist.length - 1].total_assets - dsufTossHist[dsufTossHist.length - 2].total_assets
       : 0;
     const pdDelta = pdHistory.length >= 2
       ? (pdHistory[pdHistory.length - 1].p458 + pdHistory[pdHistory.length - 1].dsuf)
         - (pdHistory[pdHistory.length - 2].p458 + pdHistory[pdHistory.length - 2].dsuf)
       : 0;
-    const grandDelta = csufDelta + pdDelta;
+    const grandDelta = dsufTossDelta + pdDelta;
     const deltaSign = grandDelta > 0 ? '+' : '';
     // 국내 증시 관행: 상승(+)은 빨강, 하락(-)은 파랑
     const deltaColor = grandDelta > 0 ? 'var(--red)' : (grandDelta < 0 ? 'var(--blue)' : 'var(--text-dim)');
