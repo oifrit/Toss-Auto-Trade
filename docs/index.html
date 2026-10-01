@@ -200,8 +200,8 @@ function renderP458Dsuf() {
 
   // dSuf(Toss) 타일: $금액 뒤에 (B:버퍼)(9/21기준 누적수익률)(보유 티어수)를 작은 글씨로 붙여서 표기.
   // 수익률은 p458/dSuf와 동일하게 p458dsuf.history[].dsuf_toss(acct.xlsx "dSuf(Toss)" 컬럼,
-  // PCT_BASE_DATE 기준)로 계산한다 — 이 컬럼은 csuf 때부터 쓰던 걸 그대로 물려받아 과거 데이터가
-  // 이미 있으므로, accounts.dsuf_toss.history(2026-10-01부터 새로 쌓기 시작한 것)보다 이쪽이 맞다.
+  // PCT_BASE_DATE 기준)로 계산한다 — 이 컬럼은 과거 데이터가 이미 있으므로,
+  // accounts.dsuf_toss.history(2026-10-01부터 새로 쌓기 시작한 것)보다 이쪽이 맞다.
   const dsufTossAcc = Object.values(currentData.accounts || {}).find(a => a.label === 'dSuf(Toss)');
   const pdDsufTossEl = document.getElementById('pd-dsuf-toss');
   if (dsufTossAcc) {
