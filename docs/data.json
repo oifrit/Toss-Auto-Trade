@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-01T10:16:02.483872",
+  "updated_at": "2026-10-01T12:50:15.291194",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -259,5 +259,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1361.1
+  "usd_krw_rate": 1360.4
 }
