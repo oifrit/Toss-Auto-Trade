@@ -122,7 +122,7 @@ footer {
   <div id="view-p458dsuf">
     <section class="panel">
       <div class="metrics">
-        <div class="metric gold"><p class="label">dSuf(Toss)(버퍼)</p><p class="value" id="pd-dsuf-toss">-</p></div>
+        <div class="metric gold"><p class="label">dSuf(Toss)</p><p class="value" id="pd-dsuf-toss">-</p></div>
         <div class="metric blue"><p class="label">p458</p><p class="value" id="pd-p458">-</p></div>
         <div class="metric red"><p class="label">dSuf</p><p class="value" id="pd-dsuf">-</p></div>
         <div class="metric violet"><p class="label">총자산</p><p class="value" id="pd-total">-</p></div>
@@ -133,7 +133,7 @@ footer {
       <h2 class="section-title">SOXL 대비 자산추이 (누적수익률 %)</h2>
       <div class="chart-wrap"><canvas id="pd-chart"></canvas></div>
       <div class="legend-row">
-        <span><i style="background:#c9a227"></i>dSuf(Toss)(버퍼)</span>
+        <span><i style="background:#c9a227"></i>dSuf(Toss)</span>
         <span><i style="background:#5b8fd6"></i>p458</span>
         <span><i style="background:#c1554b"></i>dSuf</span>
         <span><i style="background:#8a7fd6"></i>Total</span>
@@ -212,7 +212,7 @@ function renderP458Dsuf() {
       if (prevAssets) dsufTossPct = (currAssets / prevAssets - 1) * 100;
     }
     const dsufTossPctStr = `${dsufTossPct >= 0 ? '+' : ''}${dsufTossPct.toFixed(1)}%`;
-    pdDsufTossEl.innerHTML = `${fmtMoney(dsufTossAcc.total_invest)} <span class="sub">(${buffer})(${dsufTossPctStr})(${tierCount})</span>`;
+    pdDsufTossEl.innerHTML = `${fmtMoney(dsufTossAcc.total_invest)} <span class="sub">(B:${buffer})(${dsufTossPctStr})(${tierCount})</span>`;
   } else {
     pdDsufTossEl.textContent = '-';
   }
@@ -231,7 +231,7 @@ function renderP458Dsuf() {
   const realValues = {
     p458: history.map(h => h.p458),
     dSuf: history.map(h => h.dsuf),
-    'dSuf(Toss)(버퍼)': history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null),
+    'dSuf(Toss)': history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null),
     Total: history.map(h => h.total),
     SOXL: labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null),
   };
@@ -266,7 +266,7 @@ function renderP458Dsuf() {
     data: {
       labels,
       datasets: [
-        { label: 'dSuf(Toss)(버퍼)', data: dsufTossPct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
+        { label: 'dSuf(Toss)', data: dsufTossPct, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'p458', data: p458Pct, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'dSuf', data: dsufPct, borderColor: '#c1554b', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
         { label: 'Total', data: totalPct, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2 },
