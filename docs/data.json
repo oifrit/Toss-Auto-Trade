@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T13:57:07.798051",
+  "updated_at": "2026-10-02T18:10:09.213385",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -20,7 +20,7 @@
       "buffer_usd": 10,
       "tiers": [],
       "pending_order": {
-        "order_id": "v8SiG69WslKaUoPBbT-4G5WWbzTRJaBiPiHMnTsJXvvxLakpjKIgDjJLsW4P56as",
+        "order_id": "v8SiG69WslKaUoPBbT-4G5WWbzTRJaBiPiHMnTsJXvtF0Me1GzPHDiNMtBwAK7Px",
         "quantity": 1,
         "order_price_used": 158.3007,
         "mode": "A",
@@ -281,5 +281,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1357.0
+  "usd_krw_rate": 1349.05
 }
