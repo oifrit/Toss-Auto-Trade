@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T21:01:03.467483",
+  "updated_at": "2026-10-03T07:23:15.957350",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -10,23 +10,20 @@
         {
           "date": "2026-10-02",
           "total_assets": 10399.94
+        },
+        {
+          "date": "2026-10-03",
+          "total_assets": 10400.09
         }
       ],
       "label": "dSuf(Toss)",
-      "total_invest": 10399.94,
+      "total_invest": 10400.09,
       "total_bought": 0,
-      "cash": 10241.64,
-      "pending_amount": 158.3,
+      "cash": 10400.09,
+      "pending_amount": 0.0,
       "buffer_usd": 10,
       "tiers": [],
-      "pending_order": {
-        "order_id": "v8SiG69WslKaUoPBbT-4G5WWbzTRJaBiPiHMnTsJXvtF0Me1GzPHDiNMtBwAK7Px",
-        "quantity": 1,
-        "order_price_used": 158.3007,
-        "mode": "A",
-        "hold_limit_at_buy": 10,
-        "sell_rate_at_buy": 0.1
-      }
+      "pending_order": null
     }
   },
   "p458dsuf": {
@@ -281,5 +278,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1350.94
+  "usd_krw_rate": 1349.0
 }
