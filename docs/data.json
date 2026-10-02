@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02T18:10:09.213385",
+  "updated_at": "2026-10-02T20:57:56.877384",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -9,13 +9,13 @@
         },
         {
           "date": "2026-10-02",
-          "total_assets": 10400.09
+          "total_assets": 10399.94
         }
       ],
       "label": "dSuf(Toss)",
-      "total_invest": 10400.09,
+      "total_invest": 10399.94,
       "total_bought": 0,
-      "cash": 10241.79,
+      "cash": 10241.64,
       "pending_amount": 158.3,
       "buffer_usd": 10,
       "tiers": [],
@@ -281,5 +281,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1349.05
+  "usd_krw_rate": 1350.75
 }
