@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-06T18:10:09.646347",
+  "updated_at": "2026-10-06T19:08:27.185577",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -43,12 +43,12 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 180.697,
           "order_id": "v8SiG69WslKaUoPBbT-4GyzoBmCeXA0xxFYj4UniFFARNV-io1qh7Rtszi_ahcBK",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gz6slDX6xIp1I7fUHbYxOgD7E_MyGOP8tfnkO48Guup0",
           "held_days": 0
         }
       ],
       "pending_order": {
-        "order_id": "v8SiG69WslKaUoPBbT-4Gz6slDX6xIp1I7fUHbYxOgDe9zXsXy_9nlLvzaG5AKdI",
+        "order_id": "v8SiG69WslKaUoPBbT-4Gz6slDX6xIp1I7fUHbYxOgBXwQ--8VpzEGjr6OQqcOQs",
         "quantity": 15,
         "order_price_used": 172.3192,
         "mode": "S",
@@ -327,5 +327,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1339.37
+  "usd_krw_rate": 1341.3
 }
