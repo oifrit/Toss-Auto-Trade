@@ -329,10 +329,13 @@ fetch('./data.json?_=' + Date.now())
     // p458dsuf.history[].total은 이제 dSuf(Toss)(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
     // 상단 총자산 요약은 그 dSuf(Toss)를 빼고 accounts.dsuf_toss.total_invest(실시간 값)로 대체해서
     // 이중합산을 피하고 최신값을 쓴다.
+    // 상단 요약(총자산/변동분)은 아래 그래프와 달리 SOXL 거래일 정렬이 필요 없으므로,
+    // history(주말 제외, 차트용)가 아니라 latest_raw(주말 포함, acct.xlsx에 실제로 적힌 가장 최근
+    // 값 그대로)를 쓴다 — 그래프만 history/soxl_history 기준 SOXL 일봉에 맞춰 표기 (2026-10-12).
     const dsufTossAcc = Object.values(data.accounts || {}).find(a => a.label === 'dSuf(Toss)');
     const dsufTossTotalInvest = dsufTossAcc ? dsufTossAcc.total_invest : 0;
-    const pdHistory = (data.p458dsuf && data.p458dsuf.history) || [];
-    const pdLatest = pdHistory.length ? pdHistory[pdHistory.length - 1] : null;
+    const pdLatestRaw = (data.p458dsuf && data.p458dsuf.latest_raw) || [];
+    const pdLatest = pdLatestRaw.length ? pdLatestRaw[pdLatestRaw.length - 1] : null;
     const pdP458DsufOnly = pdLatest ? (pdLatest.p458 + pdLatest.dsuf) : 0;
     const grandTotalUsd = dsufTossTotalInvest + pdP458DsufOnly;
     const grandEl = document.getElementById('grand-total');
@@ -343,9 +346,9 @@ fetch('./data.json?_=' + Date.now())
     const dsufTossDelta = dsufTossHist.length >= 2
       ? dsufTossHist[dsufTossHist.length - 1].total_assets - dsufTossHist[dsufTossHist.length - 2].total_assets
       : 0;
-    const pdDelta = pdHistory.length >= 2
-      ? (pdHistory[pdHistory.length - 1].p458 + pdHistory[pdHistory.length - 1].dsuf)
-        - (pdHistory[pdHistory.length - 2].p458 + pdHistory[pdHistory.length - 2].dsuf)
+    const pdDelta = pdLatestRaw.length >= 2
+      ? (pdLatestRaw[pdLatestRaw.length - 1].p458 + pdLatestRaw[pdLatestRaw.length - 1].dsuf)
+        - (pdLatestRaw[pdLatestRaw.length - 2].p458 + pdLatestRaw[pdLatestRaw.length - 2].dsuf)
       : 0;
     const grandDelta = dsufTossDelta + pdDelta;
     const deltaSign = grandDelta > 0 ? '+' : '';
