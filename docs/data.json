@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-13T19:00:08.006538",
+  "updated_at": "2026-10-13T19:26:35.632263",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -71,7 +71,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 174.801,
           "order_id": "v8SiG69WslKaUoPBbT-4GxJmZMDVnlZtjIFDFqE3bf1hx5frJM3BC5adTTOPUct6",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5ban5tOZsYv-AkJQDXZ-z2C2z",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bal9u-xsAxTTm24MjkZLclgU",
           "held_days": 3
         },
         {
@@ -82,7 +82,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 156.772,
           "order_id": "v8SiG69WslKaUoPBbT-4G4-RE4wsWWby7L-8_dgzpFgU6bK5gbBEVCXkkfM947ta",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5ban5sMJnAaYvOUA_pWF9Xbk-",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5balzrwrfnAooIKgfaNzAakKR",
           "held_days": 2
         },
         {
@@ -93,7 +93,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 153.736,
           "order_id": "v8SiG69WslKaUoPBbT-4Gz0mG1KsBfDzUbvwpN4dWGrWH4saF1lP7SnL7Am4vYEe",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bam0RZtRfDQdPBapbDBvHFdt",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bamMHCZTjV6Kz0nGfkQuo2n5",
           "held_days": 1
         },
         {
@@ -104,12 +104,12 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 141.24,
           "order_id": "v8SiG69WslKaUoPBbT-4Gy7vkMfiFtdZKJtJD5f4BKNnzvDHzzcPkQ7Ics2XWh44",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bamfiukvwo53P90G0LeGJ5sX",
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5balI-2hkXRyWRvxj85TW6ple",
           "held_days": 0
         }
       ],
       "pending_order": {
-        "order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bam9n66AtQkm4Wjxkm1_lqVh",
+        "order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bakzlb-es8S9B6QYh1L2LEEW",
         "quantity": 16,
         "order_price_used": 134.6916,
         "mode": "S",
@@ -470,5 +470,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1340.52
+  "usd_krw_rate": 1342.45
 }
