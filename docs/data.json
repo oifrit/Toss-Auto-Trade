@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-13T13:07:38.007075",
+  "updated_at": "2026-10-13T19:00:08.006538",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -59,8 +59,8 @@
       "label": "dSuf(Toss)",
       "total_invest": 9852.08,
       "total_bought": 7447.29,
-      "cash": 2404.79,
-      "pending_amount": 0.0,
+      "cash": 249.72,
+      "pending_amount": 2155.07,
       "buffer_usd": 10,
       "tiers": [
         {
@@ -71,7 +71,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 174.801,
           "order_id": "v8SiG69WslKaUoPBbT-4GxJmZMDVnlZtjIFDFqE3bf1hx5frJM3BC5adTTOPUct6",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5ban5tOZsYv-AkJQDXZ-z2C2z",
           "held_days": 3
         },
         {
@@ -82,7 +82,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 156.772,
           "order_id": "v8SiG69WslKaUoPBbT-4G4-RE4wsWWby7L-8_dgzpFgU6bK5gbBEVCXkkfM947ta",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5ban5sMJnAaYvOUA_pWF9Xbk-",
           "held_days": 2
         },
         {
@@ -93,7 +93,7 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 153.736,
           "order_id": "v8SiG69WslKaUoPBbT-4Gz0mG1KsBfDzUbvwpN4dWGrWH4saF1lP7SnL7Am4vYEe",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bam0RZtRfDQdPBapbDBvHFdt",
           "held_days": 1
         },
         {
@@ -104,11 +104,18 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 141.24,
           "order_id": "v8SiG69WslKaUoPBbT-4Gy7vkMfiFtdZKJtJD5f4BKNnzvDHzzcPkQ7Ics2XWh44",
-          "pending_sell_order_id": null,
+          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bamfiukvwo53P90G0LeGJ5sX",
           "held_days": 0
         }
       ],
-      "pending_order": null
+      "pending_order": {
+        "order_id": "v8SiG69WslKaUoPBbT-4Gw152hP8gUSDdQjkbjg5bam9n66AtQkm4Wjxkm1_lqVh",
+        "quantity": 16,
+        "order_price_used": 134.6916,
+        "mode": "S",
+        "hold_limit_at_buy": 3,
+        "sell_rate_at_buy": 0.1
+      }
     }
   },
   "p458dsuf": {
@@ -463,5 +470,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1343.3
+  "usd_krw_rate": 1340.52
 }
