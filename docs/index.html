@@ -140,6 +140,18 @@ footer {
         <span><i style="background:#8b909c"></i>SOXL</span>
       </div>
     </section>
+
+    <section class="panel">
+      <h2 class="section-title">총자산 (연초~현재, $)</h2>
+      <div class="chart-wrap"><canvas id="ta-chart"></canvas></div>
+      <div class="legend-row">
+        <span><i style="background:#8a7fd6"></i>총자산</span>
+        <span><i style="background:#8b909c"></i>SOXL(우측축)</span>
+        <span><i style="background:#5b8fd6"></i>p458(10/1~)</span>
+        <span><i style="background:#c1554b"></i>dSuf(10/1~)</span>
+        <span><i style="background:#c9a227"></i>dSuf(Toss)(10/1~)</span>
+      </div>
+    </section>
   </div>
 
   <footer>oifrit/Toss-Auto-Trade</footer>
@@ -152,6 +164,32 @@ let currentData = null;
 
 function fmtMoney(n) {
   return '$' + Math.round(n).toLocaleString('en-US');
+}
+
+// 2026-10-14 추가: renderP458Dsuf()의 monthDividerPlugin(지역변수, 자기 labels에 닫혀있음)과
+// 같은 동작을 ta-chart에서도 쓰기 위한 공용 팩토리.
+function monthDividerPluginFor(labels) {
+  return {
+    id: 'monthDivider',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const xScale = scales.x;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      labels.forEach((d, idx) => {
+        if (idx === 0) return;
+        if (d.slice(5, 7) !== labels[idx - 1].slice(5, 7)) {
+          const x = xScale.getPixelForValue(idx);
+          ctx.beginPath();
+          ctx.moveTo(x, chartArea.top);
+          ctx.lineTo(x, chartArea.bottom);
+          ctx.stroke();
+        }
+      });
+      ctx.restore();
+    },
+  };
 }
 
 function monthTickCallback(labels) {
@@ -318,6 +356,97 @@ function renderP458Dsuf() {
   });
 }
 
+// 2026-10-14 사용자 요청: acct.xlsx 두번째 시트(2026.01~08)까지 합쳐서 연초부터의 총자산+SOXL
+// 종가를 그대로($, %아님) 보여주는 별도 그래프. p458/dSuf/dSuf(Toss) 개별 라인은 각자 실제로
+// 운용을 시작한 시점이 제각각이라(10/1 이전엔 의미 없음) INDIV_START_DATE 이후만 그린다 —
+// 총자산/SOXL은 pd.history 전체(연초~)를 그대로 쓴다.
+const INDIV_START_DATE = '2026-10-01';
+let taChart = null;
+
+function renderTotalAssetChart() {
+  const pd = currentData.p458dsuf || { history: [], soxl_history: [] };
+  const history = pd.history || [];
+  if (!history.length) return;
+  const soxlMap = {};
+  (pd.soxl_history || []).forEach(s => { soxlMap[s.date] = s.close; });
+
+  const labels = history.map(h => h.date);
+  const totalSeries = history.map(h => h.total);
+  const soxlSeries = labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null);
+  const onlyFrom = (arr) => history.map((h, i) => h.date >= INDIV_START_DATE ? arr[i] : null);
+  const p458Series = onlyFrom(history.map(h => h.p458));
+  const dsufSeries = onlyFrom(history.map(h => h.dsuf));
+  const dsufTossSeries = onlyFrom(history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null));
+
+  const ctx = document.getElementById('ta-chart');
+  if (taChart) taChart.destroy();
+  taChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: '총자산', data: totalSeries, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1.5, tension: 0.2, yAxisID: 'y' },
+        { label: 'SOXL', data: soxlSeries, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y1' },
+        { label: 'p458', data: p458Series, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
+        { label: 'dSuf', data: dsufSeries, borderColor: '#c1554b', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
+        { label: 'dSuf(Toss)', data: dsufTossSeries, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
+      ]
+    },
+    plugins: [monthDividerPluginFor(labels)],
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (item) => {
+              const name = item.dataset.label;
+              const v = item.parsed.y;
+              if (v === null || v === undefined) return `${name}: -`;
+              return name === 'SOXL' ? `${name}: $${v.toFixed(2)}` : `${name}: ${fmtMoney(v)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          display: true,
+          grid: { display: false },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            autoSkip: false,
+            maxRotation: 0,
+            callback: monthTickCallback(labels),
+          },
+        },
+        y: {
+          position: 'left',
+          display: true,
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            callback: (v) => fmtMoney(v),
+            maxTicksLimit: 5,
+          },
+        },
+        y1: {
+          position: 'right',
+          display: true,
+          grid: { display: false },
+          ticks: {
+            color: '#8b909c',
+            font: { family: 'JetBrains Mono', size: 10 },
+            callback: (v) => '$' + v.toFixed(0),
+            maxTicksLimit: 5,
+          },
+        },
+      },
+    }
+  });
+}
+
 fetch('./data.json?_=' + Date.now())
   .then(r => r.json())
   .then(data => {
@@ -325,6 +454,7 @@ fetch('./data.json?_=' + Date.now())
     document.getElementById('updated').textContent = '업데이트: ' + new Date(data.updated_at).toLocaleString('ko-KR');
 
     if (data.p458dsuf) renderP458Dsuf();
+    if (data.p458dsuf) renderTotalAssetChart();
 
     // p458dsuf.history[].total은 이제 dSuf(Toss)(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
     // 상단 총자산 요약은 그 dSuf(Toss)를 빼고 accounts.dsuf_toss.total_invest(실시간 값)로 대체해서
