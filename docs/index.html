@@ -147,9 +147,6 @@ footer {
       <div class="legend-row">
         <span><i style="background:#8a7fd6"></i>총자산</span>
         <span><i style="background:#8b909c"></i>SOXL(우측축)</span>
-        <span><i style="background:#5b8fd6"></i>p458(10/1~)</span>
-        <span><i style="background:#c1554b"></i>dSuf(10/1~)</span>
-        <span><i style="background:#c9a227"></i>dSuf(Toss)(10/1~)</span>
       </div>
     </section>
   </div>
@@ -357,10 +354,8 @@ function renderP458Dsuf() {
 }
 
 // 2026-10-14 사용자 요청: acct.xlsx 두번째 시트(2026.01~08)까지 합쳐서 연초부터의 총자산+SOXL
-// 종가를 그대로($, %아님) 보여주는 별도 그래프. p458/dSuf/dSuf(Toss) 개별 라인은 각자 실제로
-// 운용을 시작한 시점이 제각각이라(10/1 이전엔 의미 없음) INDIV_START_DATE 이후만 그린다 —
-// 총자산/SOXL은 pd.history 전체(연초~)를 그대로 쓴다.
-const INDIV_START_DATE = '2026-10-01';
+// 종가를 그대로($, %아님) 보여주는 별도 그래프. 2026-10-18 사용자 요청으로 총자산+SOXL 두 라인만 남김
+// (p458/dSuf/dSuf(Toss) 개별 라인은 제거 — 위 비교차트에 이미 있음).
 let taChart = null;
 
 function renderTotalAssetChart() {
@@ -373,10 +368,6 @@ function renderTotalAssetChart() {
   const labels = history.map(h => h.date);
   const totalSeries = history.map(h => h.total);
   const soxlSeries = labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null);
-  const onlyFrom = (arr) => history.map((h, i) => h.date >= INDIV_START_DATE ? arr[i] : null);
-  const p458Series = onlyFrom(history.map(h => h.p458));
-  const dsufSeries = onlyFrom(history.map(h => h.dsuf));
-  const dsufTossSeries = onlyFrom(history.map(h => h.dsuf_toss !== undefined ? h.dsuf_toss : null));
 
   const ctx = document.getElementById('ta-chart');
   if (taChart) taChart.destroy();
@@ -387,9 +378,6 @@ function renderTotalAssetChart() {
       datasets: [
         { label: '총자산', data: totalSeries, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1.5, tension: 0.2, yAxisID: 'y' },
         { label: 'SOXL', data: soxlSeries, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y1' },
-        { label: 'p458', data: p458Series, borderColor: '#5b8fd6', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
-        { label: 'dSuf', data: dsufSeries, borderColor: '#c1554b', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
-        { label: 'dSuf(Toss)', data: dsufTossSeries, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y' },
       ]
     },
     plugins: [monthDividerPluginFor(labels)],
