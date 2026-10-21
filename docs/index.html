@@ -408,7 +408,18 @@ function renderTotalAssetChart() {
   (pd.soxl_history || []).forEach(s => { soxlMap[s.date] = s.close; });
 
   const labels = history.map(h => h.date);
-  const totalSeries = history.map(h => h.total);
+  // 2026-10-21 사용자 요청: 예상 띠가 보이도록 x축을 '현재월+3개월' 말일까지 미래 평일로 연장
+  // (예상이 있을 때만. 미국 휴장일은 무시 — 띠의 t 매핑도 이 라벨 순서를 따르므로 근사).
+  if (projection) {
+    const now = new Date();
+    const end = new Date(now.getFullYear(), now.getMonth() + 4, 0);  // 현재월+3개월의 말일
+    const d = new Date(labels[labels.length - 1] + 'T00:00:00');
+    const iso = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+    for (d.setDate(d.getDate() + 1); d <= end; d.setDate(d.getDate() + 1)) {
+      if (d.getDay() !== 0 && d.getDay() !== 6) labels.push(iso(d));
+    }
+  }
+  const totalSeries = labels.map((_, i) => i < history.length ? history[i].total : null);
   const soxlSeries = labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null);
 
   const proj = projectionSeries(labels);
