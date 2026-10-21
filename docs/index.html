@@ -157,7 +157,9 @@ footer {
       <div class="legend-row">
         <span><i style="background:#8a7fd6"></i>총자산</span>
         <span><i style="background:#8b909c"></i>SOXL(우측축)</span>
+        <span id="ta-proj-legend" style="display:none"><i style="background:#c9a227"></i>예상 중앙값 · 띠 25~75% / 10~90%</span>
       </div>
+      <p id="ta-proj-note" style="display:none; margin:6px 0 0; font-family:var(--mono); font-size:11px; color:var(--text-dim);"></p>
     </section>
   </div>
 
@@ -367,6 +369,36 @@ function renderP458Dsuf() {
 // 종가를 그대로($, %아님) 보여주는 별도 그래프. 2026-10-18 사용자 요청으로 총자산+SOXL 두 라인만 남김
 // (p458/dSuf/dSuf(Toss) 개별 라인은 제거 — 위 비교차트에 이미 있음).
 let taChart = null;
+// 2026-10-21 사용자 요청: 예상 자산증가(MC) 대비 현재 자산 위치를 보기 위한 띠.
+// projection.json = ETC/portfolio_projection.py 출력(기준일 대비 배율의 거래일별 5~95% 분위수, 장부가 기준).
+// t(거래일) = history 라벨 순서상 기준일로부터의 칸 수(history는 SOXL 거래일 정렬이라 거래일과 맞음).
+let projection = null;
+
+function projectionSeries(labels) {
+  if (!projection) return null;
+  const b = labels.indexOf(projection.base_date);
+  if (b < 0) return null;
+  const at = (L) => labels.map((_, i) => {
+    const t = i - b;
+    const arr = projection.bands[String(L)];
+    return (t >= 0 && t < arr.length) ? projection.base_total * arr[t] : null;
+  });
+  return { base: b, p10: at(10), p25: at(25), p50: at(50), p75: at(75), p90: at(90) };
+}
+
+// 현재 장부가 배율이 그 날짜 분포의 몇 % 위치인지(5% 간격 분위수 사이 선형보간)
+function projectionPercentile(t, ratio) {
+  const lv = projection.levels;
+  const v = lv.map(L => projection.bands[String(L)][t]);
+  if (ratio <= v[0]) return { text: `하위 ${lv[0]}% 미만`, below: true };
+  if (ratio >= v[v.length - 1]) return { text: `상위 ${100 - lv[lv.length - 1]}% 이내`, below: false };
+  for (let k = 1; k < v.length; k++) {
+    if (ratio <= v[k]) {
+      const p = lv[k - 1] + (lv[k] - lv[k - 1]) * (ratio - v[k - 1]) / ((v[k] - v[k - 1]) || 1);
+      return { text: `하위 ${Math.round(p)}%`, below: p < 50 };
+    }
+  }
+}
 
 function renderTotalAssetChart() {
   const pd = currentData.p458dsuf || { history: [], soxl_history: [] };
@@ -379,6 +411,29 @@ function renderTotalAssetChart() {
   const totalSeries = history.map(h => h.total);
   const soxlSeries = labels.map(d => soxlMap[d] !== undefined ? soxlMap[d] : null);
 
+  const proj = projectionSeries(labels);
+  const bandStyle = { pointRadius: 0, borderWidth: 0, tension: 0.2, yAxisID: 'y', _band: true };
+  const projDatasets = proj ? [
+    { ...bandStyle, label: '예상10', data: proj.p10, fill: false },
+    { ...bandStyle, label: '예상90', data: proj.p90, fill: '-1', backgroundColor: 'rgba(201,162,39,0.10)' },
+    { ...bandStyle, label: '예상25', data: proj.p25, fill: false },
+    { ...bandStyle, label: '예상75', data: proj.p75, fill: '-1', backgroundColor: 'rgba(201,162,39,0.20)' },
+    { label: '예상 중앙값', data: proj.p50, borderColor: '#c9a227', pointRadius: 0, borderWidth: 1.2, borderDash: [4,3], tension: 0.2, yAxisID: 'y', fill: false },
+  ] : [];
+
+  if (proj) {
+    const last = history.length - 1;
+    const t = last - proj.base;
+    const ratio = history[last].total / projection.base_total;
+    const pos = projectionPercentile(t, ratio);
+    const med = projection.bands['50'][t] * projection.base_total;
+    document.getElementById('ta-proj-legend').style.display = '';
+    const note = document.getElementById('ta-proj-note');
+    note.style.display = '';
+    note.innerHTML = `예상(${projection.base_date} 기준 ${fmtMoney(projection.base_total)}, MC ${projection.n_sims}회, 수수료 포함, 장부가 기준, 중앙값 CAGR ${(projection.median_cagr*100).toFixed(0)}%) — `
+      + `현재 ${fmtMoney(history[last].total)} vs 예상 중앙값 ${fmtMoney(med)} · <b style="color:${pos.below ? 'var(--red)' : 'var(--teal)'}">${pos.text}</b>`;
+  }
+
   const ctx = document.getElementById('ta-chart');
   if (taChart) taChart.destroy();
   taChart = new Chart(ctx, {
@@ -388,6 +443,7 @@ function renderTotalAssetChart() {
       datasets: [
         { label: '총자산', data: totalSeries, borderColor: '#8a7fd6', pointRadius: 0, borderWidth: 1.5, tension: 0.2, yAxisID: 'y' },
         { label: 'SOXL', data: soxlSeries, borderColor: '#8b909c', pointRadius: 0, borderWidth: 1, borderDash: [2,2], tension: 0.2, yAxisID: 'y1' },
+        ...projDatasets,
       ]
     },
     plugins: [monthDividerPluginFor(labels)],
@@ -396,11 +452,17 @@ function renderTotalAssetChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
+          // 띠 경계(예상10/25/75/90)는 툴팁에서 빼고, 중앙값 줄에 25~75% 범위를 같이 표시
+          filter: (item) => !item.dataset._band,
           callbacks: {
             label: (item) => {
               const name = item.dataset.label;
               const v = item.parsed.y;
               if (v === null || v === undefined) return `${name}: -`;
+              if (name === '예상 중앙값' && proj) {
+                const i = item.dataIndex;
+                return `${name}: ${fmtMoney(v)} (25~75%: ${fmtMoney(proj.p25[i])}~${fmtMoney(proj.p75[i])})`;
+              }
               return name === 'SOXL' ? `${name}: $${v.toFixed(2)}` : `${name}: ${fmtMoney(v)}`;
             },
           },
@@ -452,7 +514,14 @@ fetch('./data.json?_=' + Date.now())
     document.getElementById('updated').textContent = '업데이트: ' + new Date(data.updated_at).toLocaleString('ko-KR');
 
     if (data.p458dsuf) renderP458Dsuf();
-    if (data.p458dsuf) renderTotalAssetChart();
+    if (data.p458dsuf) {
+      renderTotalAssetChart();
+      // 예상 띠는 별도 파일 — 없거나 실패해도 기존 그래프는 그대로
+      fetch('./projection.json?_=' + Date.now())
+        .then(r => r.ok ? r.json() : null)
+        .then(p => { if (p) { projection = p; renderTotalAssetChart(); } })
+        .catch(() => {});
+    }
 
     // p458dsuf.history[].total은 이제 dSuf(Toss)(acct.xlsx 스냅샷, 버퍼포함)까지 합산된 값이라,
     // 상단 총자산 요약은 그 dSuf(Toss)를 빼고 accounts.dsuf_toss.total_invest(실시간 값)로 대체해서
