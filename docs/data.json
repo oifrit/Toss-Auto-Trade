@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-23T18:35:26.264149",
+  "updated_at": "2026-11-24T06:55:08.966311",
   "accounts": {
     "dsuf_toss": {
       "history": [
@@ -218,27 +218,19 @@
         {
           "date": "2026-11-23",
           "total_assets": 5387.07
+        },
+        {
+          "date": "2026-11-24",
+          "total_assets": 5041.99
         }
       ],
       "label": "dSuf(Toss)",
-      "total_invest": 5387.07,
-      "total_bought": 3937.97,
-      "cash": 119.72,
-      "pending_amount": 1329.38,
+      "total_invest": 5041.99,
+      "total_bought": 279.72,
+      "cash": 4762.27,
+      "pending_amount": 0.0,
       "buffer_usd": 100,
       "tiers": [
-        {
-          "quantity": 67.0,
-          "buy_price": 49.07,
-          "buy_date": "2026-11-17",
-          "mode": "S",
-          "_hold_limit_at_buy": 3,
-          "sell_target": 52.5049,
-          "order_id": "v8SiG69WslKaUoPBbT-4G1Tr3tQflquhbC70N4JTp2J3aD7t8lTIiuuJQK5RvKBJ",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G1uLBIz2u2vEtkdXSYfW4KWhQ6RLy2TRripH_go3TffF",
-          "held_days": 3,
-          "pending_sell_is_moc": true
-        },
         {
           "quantity": 2.0,
           "buy_price": 49.26,
@@ -247,9 +239,8 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 52.7082,
           "order_id": "v8SiG69WslKaUoPBbT-4G9-3ryHiyz3BhN4Wft30d5WsfgKlNNcalcy8dGw-BQiv",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G1uLBIz2u2vEtkdXSYfW4KWPcm-S1Ky3UMDStGs9DDBz",
-          "held_days": 2,
-          "pending_sell_is_moc": false
+          "pending_sell_order_id": null,
+          "held_days": 3
         },
         {
           "quantity": 4.0,
@@ -259,31 +250,11 @@
           "_hold_limit_at_buy": 3,
           "sell_target": 48.471,
           "order_id": "v8SiG69WslKaUoPBbT-4G-TBsoHb1CiPKDoDgv-YcSRpRdhGqVExnG9gpb66tJmM",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G1uLBIz2u2vEtkdXSYfW4KWl8qOXWzGTB4QK54UZ7hx6",
-          "held_days": 1,
-          "pending_sell_is_moc": false
-        },
-        {
-          "quantity": 12.0,
-          "buy_price": 30.88,
-          "buy_date": "2026-11-20",
-          "mode": "S",
-          "_hold_limit_at_buy": 3,
-          "sell_target": 33.0416,
-          "order_id": "v8SiG69WslKaUoPBbT-4G0QsW3oMHMph3IXiGxQ6SYEi_fyMRnvYdxbvgbzW7DeB",
-          "pending_sell_order_id": "v8SiG69WslKaUoPBbT-4G1uLBIz2u2vEtkdXSYfW4KXsdcLxisrUmwkLk9T783Sk",
-          "held_days": 0,
-          "pending_sell_is_moc": false
+          "pending_sell_order_id": null,
+          "held_days": 2
         }
       ],
-      "pending_order": {
-        "order_id": "v8SiG69WslKaUoPBbT-4G1uLBIz2u2vEtkdXSYfW4KVbNy4_AsDbeeIxSm5tQzeQ",
-        "quantity": 41,
-        "order_price_used": 32.424,
-        "mode": "S",
-        "hold_limit_at_buy": 3,
-        "sell_rate_at_buy": 0.07
-      }
+      "pending_order": null
     }
   },
   "p458dsuf": {
@@ -2772,5 +2743,5 @@
       }
     ]
   },
-  "usd_krw_rate": 1345.99
+  "usd_krw_rate": 1345.0
 }
